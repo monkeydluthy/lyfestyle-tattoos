@@ -5,34 +5,26 @@ function Portfolio() {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const portfolioImages = [
-    { src: 'yamato.jpeg', alt: 'Yamato Tattoo' },
-    { src: 'gojo.jpg', alt: 'Gojo Tattoo' },
     { src: 'mihawk.jpeg', alt: 'Mihawk Tattoo' },
-    { src: 'mahoraga.png', alt: 'Mahoraga Tattoo' },
+    { src: 'mahoraga.jpeg', alt: 'Mahoraga Tattoo' },
     { src: 'berserk.jpeg', alt: 'Berserk Logo Tattoo' },
     { src: 'asta.jpeg', alt: 'Asta Tattoo' },
-    { src: 'vine.jpeg', alt: 'Vine Tattoo' },
+    { src: 'vines.jpeg', alt: 'Vine Tattoo' },
     { src: 'jack-betterqual.jpeg', alt: 'Jack Skellington Tattoo' },
     { src: 'sasuke.jpeg', alt: 'Sasuke Tattoo' },
     { src: 'tiger.jpeg', alt: 'Tiger Tattoo' },
-    { src: 'nico-robin.jpeg', alt: 'Nico Robin Tattoo' },
     { src: 'des.jpeg', alt: 'DES Tattoo' },
     { src: 'gaara-1.jpeg', alt: 'Gaara Tattoo' },
-    { src: 'rose.jpeg', alt: 'Rose Tattoo' },
     { src: 'ch-drunk.jpeg', alt: 'Cuphead Tattoo' },
     { src: 'boruto.jpeg', alt: 'Boruto Tattoo' },
     { src: 'gogeta.jpeg', alt: 'Gogeta Tattoo' },
-    { src: 's-moon.jpeg', alt: 'Sailor Moon Tattoo' },
     { src: 'ghost.jpeg', alt: 'Ghostbusters Tattoo' },
     { src: 'toji.jpeg', alt: 'Toji Tattoo' },
     { src: 'law.jpeg', alt: 'Law Tattoo' },
     { src: 'n.jpeg', alt: 'Letter N Tattoo' },
-    { src: 'lugia.jpeg', alt: 'Lugia Tattoo' },
-    { src: 'vegeta.jpeg', alt: 'Vegeta Tattoo' },
     { src: 'ian-6.jpeg', alt: 'Lil Otis Tattoo' },
     { src: 'shenron.jpeg', alt: 'Shenron Tattoo' },
     { src: 'tiger-2.jpeg', alt: 'Second Tiger Tattoo' },
-    { src: 'spike.jpeg', alt: 'Spike Tattoo' },
   ];
 
   const handleImageClick = (index) => {

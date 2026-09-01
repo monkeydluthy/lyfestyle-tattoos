@@ -43,7 +43,10 @@ function Navbar() {
         {/* Desktop Logo */}
         <div id="logo" className="desktop-only">
           <Link to="/" onClick={closeMenu}>
-            <img src="/resources/images/test-mini-logo.jpg" alt="logo" />
+            <img
+              src="/resources/images/test-mini-logo%20Small.jpeg"
+              alt="logo"
+            />
           </Link>
         </div>
 
@@ -77,13 +80,7 @@ function Navbar() {
           </li>
           <li id="hide">|</li>
           <li>
-            <a
-              href="https://book.heygoldie.com/Tampa-Tattoo"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Booking
-            </a>
+            <a href="sms:+16562401034">Booking</a>
           </li>
           <li id="hide">|</li>
           <li>
@@ -139,9 +136,7 @@ function Navbar() {
               Portfolio
             </Link>
             <a
-              href="https://book.heygoldie.com/Tampa-Tattoo"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="sms:+16562401034"
               onClick={closeMenu}
               style={{
                 display: 'flex',

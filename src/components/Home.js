@@ -12,34 +12,26 @@ function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
   const images = [
-    'yamato.jpeg',
-    'gojo.jpg',
     'mihawk.jpeg',
-    'mahoraga.png',
+    'mahoraga.jpeg',
     'berserk.jpeg',
     'asta.jpeg',
-    'vine.jpeg',
+    'vines.jpeg',
     'jack-betterqual.jpeg',
     'sasuke.jpeg',
     'tiger.jpeg',
-    'nico-robin.jpeg',
     'des.jpeg',
     'gaara-1.jpeg',
-    'rose.jpeg',
     'ch-drunk.jpeg',
     'boruto.jpeg',
     'gogeta.jpeg',
-    's-moon.jpeg',
     'ghost.jpeg',
     'toji.jpeg',
     'law.jpeg',
     'n.jpeg',
-    'lugia.jpeg',
-    'vegeta.jpeg',
     'ian-6.jpeg',
     'shenron.jpeg',
     'tiger-2.jpeg',
-    'spike.jpeg',
   ];
 
   useEffect(() => {
