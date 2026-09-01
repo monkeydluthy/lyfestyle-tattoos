@@ -1,13 +1,819 @@
-body {
+:root {
+  --primary-bg: #000000;
+  --secondary-bg: #1a1a1a;
+  --accent-bg: #2d2d2d;
+  --primary-text: #ffffff;
+  --secondary-text: #e0e0e0;
+  --accent-color: #404040;
+  --green-accent: #7fff7f;
+  --green-hover: #6be86b;
+}
+
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--primary-bg);
+  color: var(--primary-text);
+  width: 100%;
+  overflow-x: hidden;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+#wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Header Styles */
+header {
+  background-color: var(--secondary-bg);
+  padding: clamp(0.8rem, 2vw, 1.2rem) 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  border-bottom: 1px solid var(--green-accent);
+}
+
+#nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#logo {
+  flex: 0 0 auto;
+}
+
+#logo img {
+  height: 50px;
+  width: auto;
+}
+
+#nav ul {
+  display: flex;
+  list-style: none;
+  gap: 3rem;
+  align-items: center;
+  margin-left: auto;
+  padding-left: 3rem;
+}
+
+#nav ul li a {
+  color: var(--primary-text);
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+  border-radius: 4px;
+  border: 1px solid transparent;
+}
+
+#nav ul li#hide {
+  color: var(--accent-color);
+  font-size: 1.2rem;
+}
+
+#nav ul li a:hover {
+  color: var(--green-accent);
+  border-color: var(--green-accent);
+}
+
+/* Booking Section Styles */
+#booking {
+  background-color: var(--secondary-bg);
+  padding: clamp(1rem, 3vw, 1.5rem);
+  margin: 3rem 0 4rem;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--green-accent);
+  box-shadow: 0 0 20px rgba(127, 255, 127, 0.1);
+}
+
+#booking p {
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  margin-bottom: 0;
+}
+
+#booking-images {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+#box {
+  text-align: center;
+}
+
+#box img {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+#box img:hover {
+  transform: scale(1.1);
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--primary-text);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  background-color: var(--accent-bg);
+  min-width: 100px;
+  justify-content: center;
+  border: 1px solid var(--green-accent);
+}
+
+.contact-link:hover {
+  background-color: var(--green-accent);
+  color: var(--primary-bg);
+  transform: translateY(-2px);
+}
+
+/* Carousel Styles */
+.carousel {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  height: 600px;
+  margin: 0 auto 3rem;
+  background-color: var(--secondary-bg);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--green-accent);
+  box-shadow: 0 0 20px rgba(127, 255, 127, 0.1);
+}
+
+.carousel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  height: 100%;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.slide[data-active] {
+  opacity: 1;
+}
+
+.slide img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.slide[data-active] img {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.carousel-button {
+  position: absolute;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary-text);
+  cursor: pointer;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border: 1px solid var(--green-accent);
+}
+
+.carousel-button:hover {
+  background-color: var(--green-accent);
+  color: var(--primary-bg);
+}
+
+.carousel-button.prev {
+  left: 1rem;
+}
+
+.carousel-button.next {
+  right: 1rem;
+}
+
+/* Content Styles */
+.content {
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.content h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px var(--green-accent);
+}
+
+.content h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: var(--secondary-text);
+}
+
+.content h2:after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 2px;
+  background-color: var(--green-accent);
+  margin: 0.5rem auto;
+}
+
+.content h3 {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  color: var(--secondary-text);
+}
+
+.content > div {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.content div > div[style*='backgroundColor'] {
+  transition: all 0.3s ease;
+}
+
+.content div > div[style*='backgroundColor']:hover {
+  box-shadow: 0 0 15px rgba(127, 255, 127, 0.1);
+}
+
+.content
+  div[style*='backgroundColor: var(--secondary-bg)'][style*="marginBottom: '100px'"],
+.content
+  div[style*='backgroundColor: var(--secondary-bg)'][style*="padding: '60px'"] {
+  border: 1px solid var(--green-accent);
+  box-shadow: 0 0 20px rgba(127, 255, 127, 0.1);
+  transition: all 0.3s ease;
+}
+
+.content
+  div[style*='backgroundColor: var(--secondary-bg)'][style*="marginBottom: '100px'"]:hover,
+.content
+  div[style*='backgroundColor: var(--secondary-bg)'][style*="padding: '60px'"]:hover {
+  box-shadow: 0 0 25px rgba(127, 255, 127, 0.15);
+}
+
+/* Services Grid Items */
+.content div[style*='gridTemplateColumns'] > div {
+  border: 1px solid var(--green-accent);
+  transition: all 0.3s ease;
+}
+
+.content div[style*='gridTemplateColumns'] > div:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 15px rgba(127, 255, 127, 0.15);
+}
+
+/* About Page Hero Image */
+.content img[alt='Clyde Wint Tattooing'] {
+  border: 1px solid var(--green-accent);
+  transition: all 0.3s ease;
+}
+
+.content img[alt='Clyde Wint Tattooing']:hover {
+  box-shadow: 0 0 20px rgba(127, 255, 127, 0.15);
+}
+
+/* Why Choose Section Styles */
+.choose {
+  margin: 0 1rem;
+  border: 1px solid var(--green-accent) !important;
+  box-shadow: 0 0 20px rgba(127, 255, 127, 0.1);
+}
+
+.feature {
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background-color: var(--accent-bg);
+  transition: all 0.3s ease;
+}
+
+.feature:hover {
+  box-shadow: 0 0 10px var(--green-accent);
+}
+
+.feature h4 {
+  position: relative;
+  display: inline-block;
+}
+
+.feature h4:after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background-color: var(--green-accent);
+  transition: width 0.3s ease;
+}
+
+.feature:hover h4:after {
+  width: 100%;
+}
+
+/* Mobile Menu Styles */
+.hamburger-button {
+  display: none;
+  background: none;
+  border: 1px solid transparent;
+  color: var(--primary-text);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+  transition: all 0.3s ease;
+  z-index: 1001;
+  border-radius: 4px;
+}
+
+.hamburger-button:hover {
+  color: var(--green-accent);
+  border-color: var(--green-accent);
+}
+
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.95);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  border: 1px solid var(--green-accent);
+}
+
+.mobile-menu-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.mobile-menu a {
+  color: var(--primary-text);
+  text-decoration: none;
+  font-size: 18px;
+  padding: 16px;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  background-color: var(--secondary-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  border: 1px solid var(--green-accent);
+}
+
+.mobile-menu a:hover {
+  background-color: var(--green-accent);
+  color: var(--primary-bg);
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  #nav {
+    padding: 0 1.5rem;
+  }
+
+  .desktop-menu {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: block;
+  }
+
+  header {
+    padding: 0.8rem 0;
+  }
+
+  #nav {
+    padding: 0 clamp(16px, 4vw, 24px);
+  }
+
+  #logo {
+    margin-right: auto;
+  }
+
+  #logo img {
+    height: 20px;
+    margin-left: 4px;
+  }
+
+  .desktop-menu {
+    display: none !important;
+  }
+
+  #nav ul {
+    display: none;
+  }
+
+  #booking {
+    padding: clamp(1.5rem, 4vw, 2rem);
+    margin: clamp(2rem, 5vw, 3rem) 0;
+  }
+
+  #booking p {
+    font-size: clamp(1rem, 3.5vw, 1.3rem);
+    line-height: 1.5;
+  }
+
+  #booking > div {
+    gap: 1.5rem;
+  }
+
+  #booking .contact-link {
+    width: 100%;
+    padding: clamp(0.6rem, 2vw, 0.8rem) clamp(1rem, 3vw, 1.5rem);
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    justify-content: center;
+    margin: 0;
+  }
+
+  #booking > div > div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .carousel {
+    height: clamp(300px, 70vw, 500px);
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+  }
+
+  .carousel-button {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    width: clamp(2.5rem, 6vw, 3rem);
+    height: clamp(2.5rem, 6vw, 3rem);
+  }
+
+  .content {
+    padding: clamp(2rem, 5vw, 3rem) 0;
+  }
+
+  .content h1 {
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+    margin-bottom: clamp(1.5rem, 4vw, 2rem);
+  }
+
+  .content > div {
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+  }
+
+  .styles-grid {
+    display: none !important;
+  }
+
+  .styles-list {
+    display: flex !important;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .style-card {
+    background-color: var(--accent-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    text-align: left;
+    border: 1px solid var(--green-accent);
+  }
+
+  .style-card h4 {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.25rem !important;
+    font-weight: 500 !important;
+  }
+
+  .style-card p {
+    font-size: 0.9rem !important;
+    line-height: 1.4;
+    margin: 0;
+  }
+}
+
+@media (min-width: 769px) {
+  .styles-list {
+    display: none !important;
+  }
+
+  .styles-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .style-box {
+    padding: 1rem !important;
+    background-color: var(--accent-bg);
+    border-radius: 8px;
+    border: 1px solid var(--green-accent);
+  }
+
+  .style-box h4 {
+    font-size: 1.2rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+}
+
+/* Responsive Text Display */
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .desktop-only {
+    display: inline;
+  }
+
+  .mobile-only {
+    display: none;
+  }
+}
+
+/* Styles Section */
+@media (min-width: 768px) {
+  .style-box {
+    padding: 1rem !important;
+  }
+
+  .style-box h4 {
+    font-size: 1.2rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .style-box + .style-box {
+    margin-top: 0;
+  }
+}
+
+/* Mobile styles with increased specificity */
+@media screen and (max-width: 768px) {
+  header #nav {
+    padding: 0;
+  }
+
+  header #nav #logo {
+    margin: 0;
+    padding: 0;
+  }
+
+  header #nav #logo img {
+    height: 35px !important;
+    width: auto;
+    margin: 0;
+    padding-left: 8px;
+  }
+
+  header #nav .hamburger-button {
+    display: block;
+    padding: 8px;
+    font-size: 20px;
+    margin-right: 8px;
+  }
+
+  .desktop-menu {
+    display: none !important;
+  }
+
+  #wrapper {
+    padding: 0 16px;
+  }
+}
+
+/* Studio Section Styles */
+.style-card {
+  transition: transform 0.3s ease;
+}
+
+.style-card:hover {
+  transform: translateY(-2px);
+}
+
+#booking > div > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  #booking > div > div {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .contact-link {
+    flex: 1;
+  }
+}
+
+.contact-links-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .contact-links-container {
+    flex-direction: row !important;
+    gap: 2rem;
+  }
+}
+
+.style-box,
+.style-card {
+  border: 1px solid var(--green-accent);
+  transition: all 0.3s ease;
+}
+
+.style-box:hover,
+.style-card:hover {
+  border-color: var(--green-hover);
+  box-shadow: 0 0 10px var(--green-accent);
+}
+
+footer a {
+  color: var(--primary-text) !important;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: 1px solid transparent;
+}
+
+footer a:hover {
+  color: var(--green-accent) !important;
+  border-color: var(--green-accent);
+}
+
+footer {
+  background-color: var(--secondary-bg);
+  padding: 2rem 0;
+  margin-top: 4rem;
+  width: 100%;
+  border-top: 1px solid var(--green-accent) !important;
+}
+
+/* Adjust some spacings and add transitions */
+.style-box:hover,
+.style-card:hover,
+.feature:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px var(--green-accent);
+}
+
+.styles-grid .style-box {
+  background-color: var(--accent-bg);
+  padding: 1rem !important;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.styles-list .style-card {
+  background-color: var(--accent-bg);
+  padding: 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+/* Artist Section and Studio Section */
+.content #wrapper > div > div[style*='backgroundColor: var(--secondary-bg)'] {
+  border: 2px solid var(--green-accent) !important;
+  box-shadow: 0 0 20px rgba(127, 255, 127, 0.1) !important;
+  transition: all 0.3s ease !important;
+}
+
+.content
+  #wrapper
+  > div
+  > div[style*='backgroundColor: var(--secondary-bg)']:hover {
+  box-shadow: 0 0 25px rgba(127, 255, 127, 0.15) !important;
+}
+
+/* Remove borders from service grid items */
+.content div[style*='gridTemplateColumns'] > div[style*='backgroundColor'] {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.featured-section {
+  border: 2px solid var(--green-accent) !important;
+  box-shadow: 0 0 20px rgba(127, 255, 127, 0.1);
+  transition: all 0.3s ease;
+}
+
+.featured-section:hover {
+  box-shadow: 0 0 25px rgba(127, 255, 127, 0.15);
+}
+
+.content #wrapper > div > div[style*='gridTemplateColumns'] > div {
+  border: 2px solid var(--green-accent);
+  transition: all 0.3s ease;
+}
+
+.content #wrapper > div > div[style*='gridTemplateColumns'] > div:hover {
+  box-shadow: 0 0 15px rgba(127, 255, 127, 0.2);
+}
+
+/* Ensure the image container's border radius matches the border */
+.content #wrapper > div > div[style*='gridTemplateColumns'] > div {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Adjust the modal image in the portfolio */
+.content div[style*='position: fixed'] img {
+  border: 2px solid var(--green-accent);
+  border-radius: 8px;
+}
+
+.portfolio-item:hover {
+  box-shadow: 0 0 15px rgba(127, 255, 127, 0.2);
+  transform: translateY(-2px);
 }
