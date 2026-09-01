@@ -120,11 +120,11 @@ function Home() {
               }}
               className="contact-links-container"
             >
-              <a href="tel:813-613-5609" className="contact-link">
+              <a href="tel:+16562401034" className="contact-link">
                 <FontAwesomeIcon icon={faPhone} />
                 <span>Call</span>
               </a>
-              <a href="sms:+1813613-5609" className="contact-link">
+              <a href="sms:+16562401034" className="contact-link">
                 <FontAwesomeIcon icon={faComment} />
                 <span>Text</span>
               </a>
