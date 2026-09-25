@@ -732,6 +732,25 @@ footer a:hover {
   border-color: var(--green-accent);
 }
 
+footer .site-credit {
+  margin: 0.4rem 0 0;
+  font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+  color: var(--secondary-text);
+}
+
+footer .site-credit a {
+  display: inline;
+  padding: 0;
+  border: none;
+  color: var(--secondary-text) !important;
+  text-decoration: none;
+}
+
+footer .site-credit a:hover {
+  color: var(--green-accent) !important;
+  border: none;
+}
+
 footer {
   background-color: var(--secondary-bg);
   padding: 2rem 0;

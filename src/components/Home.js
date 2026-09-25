@@ -771,6 +771,15 @@ function Home() {
           <p style={{ color: 'var(--secondary-text)', fontSize: '0.9rem' }}>
             © {new Date().getFullYear()} Lyfestyle Tattoos. All rights reserved.
           </p>
+          <p className="site-credit">
+            <a
+              href="https://digitaldynamicsolution.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Site by DDS
+            </a>
+          </p>
         </div>
       </footer>
     </div>
