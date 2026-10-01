@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { trackEvent } from '../utils/analytics';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhone, faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
@@ -120,11 +121,27 @@ function Home() {
               }}
               className="contact-links-container"
             >
-              <a href="tel:+16562401034" className="contact-link">
+              <a
+                href="tel:+16562401034"
+                className="contact-link"
+                onClick={() =>
+                  trackEvent('click_to_call', {
+                    link_location: 'home',
+                  })
+                }
+              >
                 <FontAwesomeIcon icon={faPhone} />
                 <span>Call</span>
               </a>
-              <a href="sms:+16562401034" className="contact-link">
+              <a
+                href="sms:+16562401034"
+                className="contact-link"
+                onClick={() =>
+                  trackEvent('click_to_text', {
+                    link_location: 'home',
+                  })
+                }
+              >
                 <FontAwesomeIcon icon={faComment} />
                 <span>Text</span>
               </a>
