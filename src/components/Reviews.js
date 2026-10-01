@@ -7,6 +7,7 @@ import {
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
 import Footer from './Footer';
+import SEO from './SEO';
 
 function Reviews() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -85,6 +86,11 @@ function Reviews() {
         minHeight: '100vh',
       }}
     >
+      <SEO
+        title="Reviews | Lyfestyle Tattoos"
+        description="See what clients have to say about their experience at Lyfestyle Tattoos."
+        path="/reviews"
+      />
       <div
         className="content"
         style={{

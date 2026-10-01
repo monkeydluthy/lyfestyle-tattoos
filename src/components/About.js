@@ -1,5 +1,6 @@
 import React from 'react';
 import Footer from './Footer';
+import SEO from './SEO';
 
 function About() {
   return (
@@ -10,6 +11,11 @@ function About() {
         minHeight: '100vh',
       }}
     >
+      <SEO
+        title="About | Lyfestyle Tattoos"
+        description="Tampa studio for custom designs, cover-ups, and styles from traditional and anime to realism, by artist Clyde Wint."
+        path="/about"
+      />
       <div
         className="content"
         style={{

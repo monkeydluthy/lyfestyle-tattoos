@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { trackEvent } from '../utils/analytics';
+import SEO from './SEO';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhone, faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
@@ -88,6 +89,11 @@ function Home() {
 
   return (
     <div>
+      <SEO
+        title="Lyfestyle Tattoos | Tampa's Premier Tattoo Studio"
+        description="Lyfestyle Tattoos - Premier Tattoo Studio in Tampa, Florida. Specializing in custom designs, Japanese, anime, and traditional styles."
+        path="/"
+      />
       <div id="wrapper">
         <div id="booking">
           <div

@@ -7,6 +7,12 @@
   # Create React App treats warnings as errors when CI=true (Netlify's default)
   CI = "false"
 
+# Bare /index.html should not be a second URL for the homepage
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+
 # SPA fallback so /about, /portfolio, /reviews work on refresh or direct visit
 [[redirects]]
   from = "/*"

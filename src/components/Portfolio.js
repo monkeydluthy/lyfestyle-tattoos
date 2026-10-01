@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Footer from './Footer';
+import SEO from './SEO';
 
 function Portfolio() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -72,6 +73,11 @@ function Portfolio() {
         minHeight: '100vh',
       }}
     >
+      <SEO
+        title="Portfolio | Lyfestyle Tattoos"
+        description="Recent tattoo work from Lyfestyle Tattoos in Tampa, Florida."
+        path="/portfolio"
+      />
       <div
         className="content"
         style={{
