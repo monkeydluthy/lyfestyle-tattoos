@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
-const COMING_NEXT = ['Leads', 'Site text'];
+const COMING_NEXT = ['Leads'];
 
 function Dashboard() {
   const { session, signOut } = useAuth();
@@ -40,6 +40,9 @@ function Dashboard() {
               </Link>
               <Link className="admin-card-link" to="/admin/works">
                 Manage pieces
+              </Link>
+              <Link className="admin-card-link" to="/admin/content">
+                Pricing & policies
               </Link>
             </div>
           </article>
