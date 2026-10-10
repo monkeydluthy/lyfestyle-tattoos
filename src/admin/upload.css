@@ -1,0 +1,157 @@
+.admin-upload {
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 7rem;
+}
+
+.admin-back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--green-accent);
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.admin-fill,
+.admin-piece,
+.admin-drop {
+  background: var(--secondary-bg);
+  border: 1px solid var(--accent-bg);
+  border-radius: 8px;
+}
+
+.admin-fill,
+.admin-piece {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.admin-fill-title {
+  font-weight: 700;
+}
+
+.admin-drop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 88px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  color: var(--primary-text);
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  border-style: dashed;
+}
+
+.admin-drop.is-dragging {
+  border-color: var(--green-accent);
+}
+
+.admin-file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.admin-piece-top img,
+.admin-piece-placeholder {
+  width: 100%;
+  border-radius: 4px;
+  background: var(--primary-bg);
+}
+
+.admin-piece-top img {
+  display: block;
+  height: auto;
+}
+
+.admin-piece-placeholder {
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  color: var(--secondary-text);
+  word-break: break-word;
+}
+
+.admin-status {
+  margin-top: 0.5rem;
+  font-size: 16px;
+}
+
+.admin-status.is-saved {
+  color: var(--green-accent);
+}
+
+.admin-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-hint {
+  color: var(--secondary-text);
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.admin-textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.admin-check {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 44px;
+  font-size: 16px;
+}
+
+.admin-check input {
+  width: 22px;
+  height: 22px;
+}
+
+.admin-piece-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-savebar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+  background: var(--secondary-bg);
+  border-top: 1px solid var(--green-accent);
+}
+
+.admin-savebar p {
+  font-size: 16px;
+}
+
+.admin-savebar .admin-button {
+  margin-top: 0;
+}
+
+.admin-upload .admin-button {
+  min-height: 44px;
+}

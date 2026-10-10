@@ -1,0 +1,220 @@
+.admin-shell {
+  min-height: 100vh;
+  background: var(--primary-bg);
+  color: var(--primary-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+.admin-shell * {
+  box-sizing: border-box;
+}
+
+.admin-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.admin-loading {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: var(--primary-bg);
+}
+
+.admin-spinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-bg);
+  border-top-color: var(--green-accent);
+  animation: admin-spin 0.8s linear infinite;
+}
+
+@keyframes admin-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.admin-login,
+.admin-dashboard {
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2.5rem;
+}
+
+.admin-dashboard {
+  max-width: 56rem;
+}
+
+.admin-login h1,
+.admin-studio {
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+}
+
+.admin-lead,
+.admin-email,
+.admin-card p {
+  color: var(--secondary-text);
+  line-height: 1.5;
+}
+
+.admin-lead {
+  margin: 0.35rem 0 1.5rem;
+}
+
+.admin-login form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-login label {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.admin-input,
+.admin-button {
+  width: 100%;
+  min-height: 44px;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.admin-input {
+  padding: 0.65rem 0.85rem;
+  color: var(--primary-text);
+  background: var(--secondary-bg);
+  border: 1px solid var(--accent-color);
+}
+
+.admin-input:focus {
+  outline: 2px solid var(--green-accent);
+  outline-offset: 1px;
+  border-color: var(--green-accent);
+}
+
+.admin-button {
+  margin-top: 0.75rem;
+  padding: 0.65rem 1rem;
+  color: var(--primary-bg);
+  background: var(--green-accent);
+  border: 1px solid var(--green-accent);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-button:hover:not(:disabled) {
+  background: var(--green-hover);
+  border-color: var(--green-hover);
+}
+
+.admin-button:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.admin-error {
+  margin-top: 0.75rem;
+  color: var(--primary-text);
+  background: var(--accent-bg);
+  border: 1px solid var(--green-accent);
+  border-radius: 4px;
+  padding: 0.75rem 0.85rem;
+  line-height: 1.4;
+}
+
+header.admin-header {
+  position: static;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+  width: auto;
+  margin: 0 0 1.5rem;
+  padding: 0 0 1rem;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--accent-bg);
+  z-index: auto;
+}
+
+.admin-email {
+  margin-top: 0.25rem;
+  word-break: break-word;
+}
+
+.admin-header .admin-button {
+  margin-top: 0;
+}
+
+.admin-cards {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-card {
+  background: var(--secondary-bg);
+  border: 1px solid var(--accent-bg);
+  border-radius: 8px;
+  padding: 1.1rem 1rem;
+}
+
+.admin-card h2 {
+  font-size: 1.15rem;
+  margin-bottom: 0.35rem;
+}
+
+.admin-card-link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--green-accent);
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.admin-card-links {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 769px) {
+  .admin-login,
+  .admin-dashboard {
+    padding-top: 3rem;
+  }
+
+  header.admin-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .admin-header .admin-button {
+    width: auto;
+    min-width: 8rem;
+  }
+
+  .admin-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .admin-card-links {
+    flex-direction: row;
+    gap: 1rem;
+  }
+}
