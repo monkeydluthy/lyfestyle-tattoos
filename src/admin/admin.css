@@ -192,6 +192,21 @@ header.admin-header {
   flex-direction: column;
 }
 
+.admin-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  margin-left: 0.45rem;
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  background: var(--green-accent);
+  color: var(--primary-bg);
+  font-size: 0.85rem;
+  vertical-align: middle;
+}
+
 @media (min-width: 769px) {
   .admin-login,
   .admin-dashboard {

@@ -1,0 +1,529 @@
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import { deleteLead, referenceObjectPath } from './deleteLead';
+import { LEAD_STATUSES, leadStatusLabel } from './leadOptions';
+import './leads.css';
+
+const SIGNED_URL_SECONDS = 5 * 60;
+
+const DETAIL_FIELDS = [
+  ['name', 'Name'],
+  ['email', 'Email'],
+  ['phone', 'Phone'],
+  ['instagram', 'Instagram'],
+  ['idea', 'Idea'],
+  ['placement', 'Placement'],
+  ['size', 'Size'],
+  ['style', 'Style'],
+  ['budget', 'Budget'],
+  ['timing', 'Timing'],
+  ['source', 'Source'],
+];
+
+function summary(lead) {
+  return [lead.idea, lead.placement, lead.size].filter(Boolean).join(' · ');
+}
+
+function formatWhen(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
+
+function displayValue(lead, key) {
+  const value = lead[key];
+  if (value === null || value === undefined || value === '') return '—';
+  return String(value);
+}
+
+function instagramHandle(value) {
+  return String(value || '')
+    .trim()
+    .replace(/^@+/, '')
+    .replace(/\s+/g, '');
+}
+
+export function instagramUrl(value) {
+  const handle = instagramHandle(value);
+  return handle ? `https://ig.me/m/${handle}` : '';
+}
+
+function phoneHref(phone) {
+  const compact = String(phone).replace(/[^\d+]/g, '');
+  return compact ? `tel:${compact}` : '';
+}
+
+function Leads() {
+  const [leads, setLeads] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [query, setQuery] = useState('');
+  const [selectedId, setSelectedId] = useState(null);
+  const [photos, setPhotos] = useState([]);
+  const [photoError, setPhotoError] = useState('');
+  const [statusMessage, setStatusMessage] = useState('');
+  const [copied, setCopied] = useState('');
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [notesDraft, setNotesDraft] = useState('');
+  const [quoteDraft, setQuoteDraft] = useState('');
+  const [depositDraft, setDepositDraft] = useState(false);
+  const [fieldStatus, setFieldStatus] = useState({});
+
+  const selected = leads.find((lead) => lead.id === selectedId) || null;
+
+  useEffect(() => {
+    document.title = 'Leads | Lyfestyle Tattoos';
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      if (!supabase) {
+        setLoadError('Supabase is not configured.');
+        setLoading(false);
+        return;
+      }
+      const { data, error } = await supabase
+        .from('leads')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (cancelled) return;
+      if (error) {
+        setLoadError(error.message || "Couldn't load leads.");
+        setLoading(false);
+        return;
+      }
+      setLeads(data || []);
+      setLoading(false);
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function signPhotos() {
+      setPhotos([]);
+      setPhotoError('');
+      if (!supabase || !selected) return;
+      const paths = (selected.reference_paths || []).map(referenceObjectPath).filter(Boolean);
+      if (paths.length === 0) return;
+      const { data, error } = await supabase.storage
+        .from('lead-references')
+        .createSignedUrls(paths, SIGNED_URL_SECONDS);
+      if (cancelled) return;
+      if (error) {
+        setPhotoError(error.message || "Couldn't open the reference photos.");
+        return;
+      }
+      const failed = (data || []).find((item) => item.error);
+      if (failed) {
+        setPhotoError(failed.error || "Couldn't open the reference photos.");
+        return;
+      }
+      setPhotos(
+        (data || [])
+          .filter((item) => item.signedUrl)
+          .map((item) => ({ path: item.path, url: item.signedUrl }))
+      );
+    }
+    signPhotos();
+    return () => {
+      cancelled = true;
+    };
+  }, [selected]);
+
+  const visible = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    return leads.filter((lead) => {
+      if (statusFilter !== 'all' && lead.status !== statusFilter) return false;
+      if (!needle) return true;
+      const haystack = [lead.name, lead.email, lead.phone, lead.idea, lead.notes]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+      return haystack.includes(needle);
+    });
+  }, [leads, query, statusFilter]);
+
+  function openLead(lead) {
+    setSelectedId(lead.id);
+    setNotesDraft(lead.notes || '');
+    setQuoteDraft(lead.quote_amount == null ? '' : String(lead.quote_amount));
+    setDepositDraft(Boolean(lead.deposit_paid));
+    setFieldStatus({});
+    setStatusMessage('');
+    setCopied('');
+    setConfirmingDelete(false);
+  }
+
+  function closePanel() {
+    setSelectedId(null);
+    setPhotos([]);
+    setPhotoError('');
+    setStatusMessage('');
+    setCopied('');
+    setConfirmingDelete(false);
+  }
+
+  async function copyValue(value) {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(value);
+    } catch {
+      setCopied('');
+      setStatusMessage("Couldn't copy that.");
+    }
+  }
+
+  async function changeStatus(nextStatus) {
+    if (!supabase || !selected || nextStatus === selected.status) return;
+    if (!LEAD_STATUSES.includes(nextStatus)) return;
+    setBusy(true);
+    setStatusMessage('saving');
+    const { data, error } = await supabase
+      .from('leads')
+      .update({ status: nextStatus })
+      .eq('id', selected.id)
+      .select('*')
+      .single();
+    setBusy(false);
+    if (error) {
+      setStatusMessage(error.message || "Couldn't update the status.");
+      return;
+    }
+    setLeads((current) => current.map((lead) => (lead.id === data.id ? data : lead)));
+    setStatusMessage('saved');
+  }
+
+  async function saveFields(changes, field) {
+    if (!supabase || !selected) return;
+    setFieldStatus((current) => ({ ...current, [field]: 'saving' }));
+    const { data, error } = await supabase
+      .from('leads')
+      .update(changes)
+      .eq('id', selected.id)
+      .select('*')
+      .single();
+    if (error) {
+      setFieldStatus((current) => ({
+        ...current,
+        [field]: error.message || "Couldn't save this.",
+      }));
+      return;
+    }
+    setLeads((current) => current.map((lead) => (lead.id === data.id ? data : lead)));
+    setFieldStatus((current) => ({ ...current, [field]: 'saved' }));
+  }
+
+  async function saveNotes() {
+    await saveFields({ notes: notesDraft.trim() ? notesDraft : null }, 'notes');
+  }
+
+  async function saveQuote() {
+    const trimmed = String(quoteDraft).trim();
+    if (trimmed !== '' && !Number.isFinite(Number(trimmed))) {
+      setFieldStatus((current) => ({ ...current, quote: 'Enter a quote amount.' }));
+      return;
+    }
+    await saveFields({ quote_amount: trimmed === '' ? null : Number(trimmed) }, 'quote');
+  }
+
+  async function saveDeposit() {
+    await saveFields({ deposit_paid: depositDraft }, 'deposit');
+  }
+
+  async function removeSelected() {
+    if (!supabase || !selected) return;
+    setBusy(true);
+    setStatusMessage('');
+    const result = await deleteLead(supabase, selected);
+    setBusy(false);
+    if (!result.ok) {
+      setStatusMessage(result.error);
+      setConfirmingDelete(false);
+      return;
+    }
+    setLeads((current) => current.filter((lead) => lead.id !== selected.id));
+    closePanel();
+  }
+
+  const statusOptions = selected && !LEAD_STATUSES.includes(selected.status)
+    ? [selected.status, ...LEAD_STATUSES]
+    : LEAD_STATUSES;
+
+  return (
+    <div className="admin-leads">
+      <header className="admin-header">
+        <div>
+          <p className="admin-studio">Leads</p>
+          <Link className="admin-back" to="/admin">
+            Back to admin
+          </Link>
+        </div>
+      </header>
+
+      <div className="admin-tabs" role="tablist">
+        <button
+          className={statusFilter === 'all' ? 'admin-tab is-selected' : 'admin-tab'}
+          type="button"
+          role="tab"
+          aria-selected={statusFilter === 'all'}
+          onClick={() => setStatusFilter('all')}
+        >
+          All ({leads.length})
+        </button>
+        {LEAD_STATUSES.map((status) => (
+          <button
+            key={status}
+            className={statusFilter === status ? 'admin-tab is-selected' : 'admin-tab'}
+            type="button"
+            role="tab"
+            aria-selected={statusFilter === status}
+            onClick={() => setStatusFilter(status)}
+          >
+            {leadStatusLabel(status)} ({leads.filter((lead) => lead.status === status).length})
+          </button>
+        ))}
+      </div>
+
+      <label className="admin-sr" htmlFor="lead-search">
+        Search
+      </label>
+      <input
+        id="lead-search"
+        className="admin-input"
+        type="search"
+        placeholder="Name, email, phone, idea, or notes"
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+      />
+
+      {loading ? <p className="admin-lead">Loading</p> : null}
+      {loadError ? (
+        <p className="admin-error" role="alert">
+          {loadError}
+        </p>
+      ) : null}
+      {!loading && !loadError && visible.length === 0 ? (
+        <p className="admin-lead">No leads in this view.</p>
+      ) : null}
+
+      <div className="admin-lead-list">
+        {visible.map((lead) => (
+          <button className="admin-lead-row" type="button" key={lead.id} onClick={() => openLead(lead)}>
+            <span className="admin-lead-name">{lead.name}</span>
+            <span className="admin-lead-summary">{summary(lead)}</span>
+            <span className="admin-lead-meta">
+              <span>{formatWhen(lead.created_at)}</span>
+              <span className="admin-chip">{leadStatusLabel(lead.status)}</span>
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {selected ? (
+        <div className="admin-panel-root">
+          <button className="admin-panel-backdrop" type="button" aria-label="Close" onClick={closePanel} />
+          <section className="admin-panel" role="dialog" aria-label="Lead">
+            <div className="admin-panel-body">
+              <p className="admin-lead-when">{formatWhen(selected.created_at)}</p>
+              {DETAIL_FIELDS.map(([key, label]) => (
+                <div className="admin-lead-field" key={key}>
+                  <dt>{label}</dt>
+                  <dd>
+                    {key === 'email' && selected.email ? (
+                      <a href={`mailto:${selected.email}`}>{selected.email}</a>
+                    ) : null}
+                    {key === 'phone' && selected.phone ? (
+                      <a href={phoneHref(selected.phone)}>{selected.phone}</a>
+                    ) : null}
+                    {key === 'instagram' && selected.instagram ? <span>{selected.instagram}</span> : null}
+                    {key === 'instagram' && instagramUrl(selected.instagram) ? (
+                      <a href={instagramUrl(selected.instagram)} target="_blank" rel="noreferrer">
+                        Open Instagram
+                      </a>
+                    ) : null}
+                    {key !== 'email' && key !== 'phone' && key !== 'instagram'
+                      ? displayValue(selected, key)
+                      : null}
+                    {(key === 'email' && !selected.email) ||
+                    (key === 'phone' && !selected.phone) ||
+                    (key === 'instagram' && !instagramUrl(selected.instagram))
+                      ? '—'
+                      : null}
+                    {['email', 'phone', 'instagram'].includes(key) && selected[key] ? (
+                      <button
+                        className="admin-button admin-button-quiet"
+                        type="button"
+                        onClick={() => copyValue(String(selected[key]))}
+                      >
+                        {copied === String(selected[key]) ? 'Copied' : 'Copy'}
+                      </button>
+                    ) : null}
+                  </dd>
+                </div>
+              ))}
+
+              <label htmlFor="lead-notes">Notes</label>
+              <textarea
+                id="lead-notes"
+                className="admin-input admin-textarea"
+                rows={4}
+                value={notesDraft}
+                onChange={(event) => {
+                  setNotesDraft(event.target.value);
+                  setFieldStatus((current) => ({ ...current, notes: '' }));
+                }}
+              />
+              <FieldSave
+                dirty={notesDraft !== (selected.notes || '')}
+                status={fieldStatus.notes}
+                disabled={busy}
+                onSave={saveNotes}
+              />
+
+              <label htmlFor="lead-quote">Quote</label>
+              <input
+                id="lead-quote"
+                className="admin-input"
+                inputMode="decimal"
+                value={quoteDraft}
+                onChange={(event) => {
+                  setQuoteDraft(event.target.value);
+                  setFieldStatus((current) => ({ ...current, quote: '' }));
+                }}
+              />
+              <FieldSave
+                dirty={quoteNumber(quoteDraft) !== quoteNumber(selected.quote_amount)}
+                status={fieldStatus.quote}
+                disabled={busy}
+                onSave={saveQuote}
+              />
+
+              <label className="admin-check" htmlFor="lead-deposit">
+                <input
+                  id="lead-deposit"
+                  type="checkbox"
+                  checked={depositDraft}
+                  onChange={(event) => {
+                    setDepositDraft(event.target.checked);
+                    setFieldStatus((current) => ({ ...current, deposit: '' }));
+                  }}
+                />
+                Deposit paid
+              </label>
+              <FieldSave
+                dirty={depositDraft !== Boolean(selected.deposit_paid)}
+                status={fieldStatus.deposit}
+                disabled={busy}
+                onSave={saveDeposit}
+              />
+
+              <h2>Reference photos</h2>
+              {photoError ? (
+                <p className="admin-error" role="alert">
+                  {photoError}
+                </p>
+              ) : null}
+              {!photoError && photos.length === 0 ? <p>No reference photos.</p> : null}
+              <div className="admin-lead-photos">
+                {photos.map((photo) => (
+                  <a key={photo.path} href={photo.url} target="_blank" rel="noreferrer">
+                    <img src={photo.url} alt="" loading="lazy" />
+                  </a>
+                ))}
+              </div>
+
+              <label htmlFor="lead-status">Status</label>
+              <select
+                id="lead-status"
+                className="admin-input"
+                value={selected.status}
+                disabled={busy}
+                onChange={(event) => changeStatus(event.target.value)}
+              >
+                {statusOptions.map((status) => (
+                  <option key={status} value={status}>
+                    {leadStatusLabel(status)}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="admin-panel-actions">
+              {statusMessage === 'saving' ? <p role="status">Saving…</p> : null}
+              {statusMessage === 'saved' ? <p role="status">Saved.</p> : null}
+              {statusMessage && statusMessage !== 'saving' && statusMessage !== 'saved' ? (
+                <p className="admin-error" role="alert">
+                  {statusMessage}
+                </p>
+              ) : null}
+              {confirmingDelete ? (
+                <>
+                  <p>Delete this lead and its photos?</p>
+                  <button className="admin-button" type="button" disabled={busy} onClick={removeSelected}>
+                    Confirm delete
+                  </button>
+                  <button
+                    className="admin-button admin-button-quiet"
+                    type="button"
+                    disabled={busy}
+                    onClick={() => setConfirmingDelete(false)}
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <button
+                  className="admin-button admin-button-quiet"
+                  type="button"
+                  disabled={busy}
+                  onClick={() => setConfirmingDelete(true)}
+                >
+                  Delete
+                </button>
+              )}
+            </div>
+          </section>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function quoteNumber(value) {
+  if (value === null || value === undefined || String(value).trim() === '') return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : Number.NaN;
+}
+
+function FieldSave({ dirty, status, disabled, onSave }) {
+  const saving = status === 'saving';
+  const isError = Boolean(status) && status !== 'saving' && status !== 'saved';
+  const message = status === 'saving' ? 'Saving…' : status === 'saved' ? 'Saved.' : status || '';
+  return (
+    <div className="admin-field-save">
+      {message ? (
+        <p className={isError ? 'admin-error' : 'admin-field-status'} role={isError ? 'alert' : 'status'}>
+          {message}
+        </p>
+      ) : null}
+      <button className="admin-button" type="button" onClick={onSave} disabled={!dirty || saving || disabled}>
+        {saving ? 'Saving' : 'Save'}
+      </button>
+    </div>
+  );
+}
+
+export default Leads;
