@@ -7,6 +7,7 @@ import './admin.css';
 const Login = lazy(() => import('./Login'));
 const Dashboard = lazy(() => import('./Dashboard'));
 const Upload = lazy(() => import('./Upload'));
+const Works = lazy(() => import('./Works'));
 
 function AdminSpinner() {
   return (
@@ -58,6 +59,14 @@ function AdminRoutes() {
         element={
           <ProtectedRoute>
             <Upload />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="works"
+        element={
+          <ProtectedRoute>
+            <Works />
           </ProtectedRoute>
         }
       />

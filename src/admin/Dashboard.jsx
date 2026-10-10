@@ -34,9 +34,14 @@ function Dashboard() {
         <div className="admin-cards">
           <article className="admin-card">
             <h2>Gallery</h2>
-            <Link className="admin-card-link" to="/admin/upload">
-              Add pieces
-            </Link>
+            <div className="admin-card-links">
+              <Link className="admin-card-link" to="/admin/upload">
+                Add pieces
+              </Link>
+              <Link className="admin-card-link" to="/admin/works">
+                Manage pieces
+              </Link>
+            </div>
           </article>
           {COMING_NEXT.map((title) => (
             <article className="admin-card" key={title}>

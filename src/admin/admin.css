@@ -187,6 +187,11 @@ header.admin-header {
   text-decoration: none;
 }
 
+.admin-card-links {
+  display: flex;
+  flex-direction: column;
+}
+
 @media (min-width: 769px) {
   .admin-login,
   .admin-dashboard {
@@ -206,5 +211,10 @@ header.admin-header {
 
   .admin-cards {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .admin-card-links {
+    flex-direction: row;
+    gap: 1rem;
   }
 }
