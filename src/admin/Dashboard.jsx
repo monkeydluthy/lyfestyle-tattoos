@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
-const CARDS = ['Gallery', 'Leads', 'Site text'];
+const COMING_NEXT = ['Leads', 'Site text'];
 
 function Dashboard() {
   const { session, signOut } = useAuth();
@@ -32,7 +32,13 @@ function Dashboard() {
       <main>
         <h1 className="admin-sr">Studio admin</h1>
         <div className="admin-cards">
-          {CARDS.map((title) => (
+          <article className="admin-card">
+            <h2>Gallery</h2>
+            <Link className="admin-card-link" to="/admin/upload">
+              Add pieces
+            </Link>
+          </article>
+          {COMING_NEXT.map((title) => (
             <article className="admin-card" key={title}>
               <h2>{title}</h2>
               <p>Coming next</p>
