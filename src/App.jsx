@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -12,6 +12,8 @@ import About from './components/About';
 import Portfolio from './components/Portfolio';
 import SEO from './components/SEO';
 import './index.css';
+
+const AdminApp = lazy(() => import('./admin/AdminApp'));
 
 const GA_MEASUREMENT_ID = 'G-R3RBQDCXX4';
 
@@ -77,19 +79,53 @@ function NotFound() {
   );
 }
 
+function AdminFallback() {
+  return (
+    <div
+      role="status"
+      style={{
+        minHeight: '100vh',
+        display: 'grid',
+        placeItems: 'center',
+        background: 'var(--primary-bg)',
+        color: 'var(--secondary-text)',
+        fontSize: '16px',
+      }}
+    >
+      Loading
+    </div>
+  );
+}
+
+function PublicSite() {
+  return (
+    <div className="App">
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/portfolio" element={<Portfolio />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </div>
+  );
+}
+
 function App() {
   return (
     <Router>
       <Analytics />
-      <div className="App">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/portfolio" element={<Portfolio />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route
+          path="/admin/*"
+          element={
+            <Suspense fallback={<AdminFallback />}>
+              <AdminApp />
+            </Suspense>
+          }
+        />
+        <Route path="*" element={<PublicSite />} />
+      </Routes>
     </Router>
   );
 }
