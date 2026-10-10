@@ -11,14 +11,13 @@ const DETAIL_FIELDS = [
   ['name', 'Name'],
   ['email', 'Email'],
   ['phone', 'Phone'],
+  ['instagram', 'Instagram'],
   ['idea', 'Idea'],
   ['placement', 'Placement'],
   ['size', 'Size'],
   ['style', 'Style'],
   ['budget', 'Budget'],
   ['timing', 'Timing'],
-  ['quote_amount', 'Quote'],
-  ['deposit_paid', 'Deposit paid'],
   ['source', 'Source'],
 ];
 
@@ -41,9 +40,19 @@ function formatWhen(value) {
 function displayValue(lead, key) {
   const value = lead[key];
   if (value === null || value === undefined || value === '') return '—';
-  if (key === 'deposit_paid') return value ? 'Yes' : 'No';
-  if (key === 'quote_amount') return `$${value}`;
   return String(value);
+}
+
+function instagramHandle(value) {
+  return String(value || '')
+    .trim()
+    .replace(/^@+/, '')
+    .replace(/\s+/g, '');
+}
+
+export function instagramUrl(value) {
+  const handle = instagramHandle(value);
+  return handle ? `https://ig.me/m/${handle}` : '';
 }
 
 function phoneHref(phone) {
@@ -64,6 +73,10 @@ function Leads() {
   const [copied, setCopied] = useState('');
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [notesDraft, setNotesDraft] = useState('');
+  const [quoteDraft, setQuoteDraft] = useState('');
+  const [depositDraft, setDepositDraft] = useState(false);
+  const [fieldStatus, setFieldStatus] = useState({});
 
   const selected = leads.find((lead) => lead.id === selectedId) || null;
 
@@ -136,7 +149,7 @@ function Leads() {
     return leads.filter((lead) => {
       if (statusFilter !== 'all' && lead.status !== statusFilter) return false;
       if (!needle) return true;
-      const haystack = [lead.name, lead.email, lead.phone, lead.idea]
+      const haystack = [lead.name, lead.email, lead.phone, lead.idea, lead.notes]
         .filter(Boolean)
         .join(' ')
         .toLowerCase();
@@ -146,6 +159,10 @@ function Leads() {
 
   function openLead(lead) {
     setSelectedId(lead.id);
+    setNotesDraft(lead.notes || '');
+    setQuoteDraft(lead.quote_amount == null ? '' : String(lead.quote_amount));
+    setDepositDraft(Boolean(lead.deposit_paid));
+    setFieldStatus({});
     setStatusMessage('');
     setCopied('');
     setConfirmingDelete(false);
@@ -188,6 +205,43 @@ function Leads() {
     }
     setLeads((current) => current.map((lead) => (lead.id === data.id ? data : lead)));
     setStatusMessage('saved');
+  }
+
+  async function saveFields(changes, field) {
+    if (!supabase || !selected) return;
+    setFieldStatus((current) => ({ ...current, [field]: 'saving' }));
+    const { data, error } = await supabase
+      .from('leads')
+      .update(changes)
+      .eq('id', selected.id)
+      .select('*')
+      .single();
+    if (error) {
+      setFieldStatus((current) => ({
+        ...current,
+        [field]: error.message || "Couldn't save this.",
+      }));
+      return;
+    }
+    setLeads((current) => current.map((lead) => (lead.id === data.id ? data : lead)));
+    setFieldStatus((current) => ({ ...current, [field]: 'saved' }));
+  }
+
+  async function saveNotes() {
+    await saveFields({ notes: notesDraft.trim() ? notesDraft : null }, 'notes');
+  }
+
+  async function saveQuote() {
+    const trimmed = String(quoteDraft).trim();
+    if (trimmed !== '' && !Number.isFinite(Number(trimmed))) {
+      setFieldStatus((current) => ({ ...current, quote: 'Enter a quote amount.' }));
+      return;
+    }
+    await saveFields({ quote_amount: trimmed === '' ? null : Number(trimmed) }, 'quote');
+  }
+
+  async function saveDeposit() {
+    await saveFields({ deposit_paid: depositDraft }, 'deposit');
   }
 
   async function removeSelected() {
@@ -251,7 +305,7 @@ function Leads() {
         id="lead-search"
         className="admin-input"
         type="search"
-        placeholder="Name, email, phone, or idea"
+        placeholder="Name, email, phone, idea, or notes"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
       />
@@ -295,11 +349,21 @@ function Leads() {
                     {key === 'phone' && selected.phone ? (
                       <a href={phoneHref(selected.phone)}>{selected.phone}</a>
                     ) : null}
-                    {key !== 'email' && key !== 'phone' ? displayValue(selected, key) : null}
-                    {(key === 'email' && !selected.email) || (key === 'phone' && !selected.phone)
+                    {key === 'instagram' && selected.instagram ? <span>{selected.instagram}</span> : null}
+                    {key === 'instagram' && instagramUrl(selected.instagram) ? (
+                      <a href={instagramUrl(selected.instagram)} target="_blank" rel="noreferrer">
+                        Open Instagram
+                      </a>
+                    ) : null}
+                    {key !== 'email' && key !== 'phone' && key !== 'instagram'
+                      ? displayValue(selected, key)
+                      : null}
+                    {(key === 'email' && !selected.email) ||
+                    (key === 'phone' && !selected.phone) ||
+                    (key === 'instagram' && !instagramUrl(selected.instagram))
                       ? '—'
                       : null}
-                    {['email', 'phone'].includes(key) && selected[key] ? (
+                    {['email', 'phone', 'instagram'].includes(key) && selected[key] ? (
                       <button
                         className="admin-button admin-button-quiet"
                         type="button"
@@ -311,6 +375,61 @@ function Leads() {
                   </dd>
                 </div>
               ))}
+
+              <label htmlFor="lead-notes">Notes</label>
+              <textarea
+                id="lead-notes"
+                className="admin-input admin-textarea"
+                rows={4}
+                value={notesDraft}
+                onChange={(event) => {
+                  setNotesDraft(event.target.value);
+                  setFieldStatus((current) => ({ ...current, notes: '' }));
+                }}
+              />
+              <FieldSave
+                dirty={notesDraft !== (selected.notes || '')}
+                status={fieldStatus.notes}
+                disabled={busy}
+                onSave={saveNotes}
+              />
+
+              <label htmlFor="lead-quote">Quote</label>
+              <input
+                id="lead-quote"
+                className="admin-input"
+                inputMode="decimal"
+                value={quoteDraft}
+                onChange={(event) => {
+                  setQuoteDraft(event.target.value);
+                  setFieldStatus((current) => ({ ...current, quote: '' }));
+                }}
+              />
+              <FieldSave
+                dirty={quoteNumber(quoteDraft) !== quoteNumber(selected.quote_amount)}
+                status={fieldStatus.quote}
+                disabled={busy}
+                onSave={saveQuote}
+              />
+
+              <label className="admin-check" htmlFor="lead-deposit">
+                <input
+                  id="lead-deposit"
+                  type="checkbox"
+                  checked={depositDraft}
+                  onChange={(event) => {
+                    setDepositDraft(event.target.checked);
+                    setFieldStatus((current) => ({ ...current, deposit: '' }));
+                  }}
+                />
+                Deposit paid
+              </label>
+              <FieldSave
+                dirty={depositDraft !== Boolean(selected.deposit_paid)}
+                status={fieldStatus.deposit}
+                disabled={busy}
+                onSave={saveDeposit}
+              />
 
               <h2>Reference photos</h2>
               {photoError ? (
@@ -379,6 +498,30 @@ function Leads() {
           </section>
         </div>
       ) : null}
+    </div>
+  );
+}
+
+function quoteNumber(value) {
+  if (value === null || value === undefined || String(value).trim() === '') return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : Number.NaN;
+}
+
+function FieldSave({ dirty, status, disabled, onSave }) {
+  const saving = status === 'saving';
+  const isError = Boolean(status) && status !== 'saving' && status !== 'saved';
+  const message = status === 'saving' ? 'Saving…' : status === 'saved' ? 'Saved.' : status || '';
+  return (
+    <div className="admin-field-save">
+      {message ? (
+        <p className={isError ? 'admin-error' : 'admin-field-status'} role={isError ? 'alert' : 'status'}>
+          {message}
+        </p>
+      ) : null}
+      <button className="admin-button" type="button" onClick={onSave} disabled={!dirty || saving || disabled}>
+        {saving ? 'Saving' : 'Save'}
+      </button>
     </div>
   );
 }
