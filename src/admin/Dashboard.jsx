@@ -1,16 +1,32 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 import { useAuth } from './AuthContext';
-
-const COMING_NEXT = ['Leads'];
 
 function Dashboard() {
   const { session, signOut } = useAuth();
   const navigate = useNavigate();
   const email = session?.user?.email || '';
+  const [newLeadCount, setNewLeadCount] = useState(null);
 
   useEffect(() => {
     document.title = 'Admin | Lyfestyle Tattoos';
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadCount() {
+      if (!supabase) return;
+      const { count, error } = await supabase
+        .from('leads')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'new');
+      if (!cancelled && !error) setNewLeadCount(count ?? 0);
+    }
+    loadCount();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function handleSignOut() {
@@ -46,12 +62,19 @@ function Dashboard() {
               </Link>
             </div>
           </article>
-          {COMING_NEXT.map((title) => (
-            <article className="admin-card" key={title}>
-              <h2>{title}</h2>
-              <p>Coming next</p>
-            </article>
-          ))}
+          <article className="admin-card">
+            <h2>
+              Leads
+              {newLeadCount === null ? null : (
+                <span className="admin-count" aria-label={`${newLeadCount} new`}>
+                  {newLeadCount}
+                </span>
+              )}
+            </h2>
+            <Link className="admin-card-link" to="/admin/leads">
+              Open inbox
+            </Link>
+          </article>
         </div>
       </main>
     </div>

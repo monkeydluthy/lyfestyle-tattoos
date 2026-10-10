@@ -1,0 +1,208 @@
+.admin-leads {
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2rem;
+  overflow-x: hidden;
+}
+
+.admin-back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--green-accent);
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.admin-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.admin-tab {
+  flex: 1 1 8rem;
+  min-height: 44px;
+  padding: 0.65rem 0.75rem;
+  color: var(--primary-text);
+  background: var(--secondary-bg);
+  border: 1px solid var(--accent-bg);
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.admin-tab.is-selected {
+  border-color: var(--green-accent);
+  color: var(--green-accent);
+}
+
+.admin-lead-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.85rem;
+}
+
+.admin-lead-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.75rem;
+  color: var(--primary-text);
+  background: var(--secondary-bg);
+  border: 1px solid var(--accent-bg);
+  border-radius: 8px;
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-lead-name {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.admin-lead-summary,
+.admin-lead-meta,
+.admin-lead-field dd,
+.admin-lead-when {
+  overflow-wrap: anywhere;
+}
+
+.admin-lead-summary,
+.admin-lead-meta {
+  color: var(--secondary-text);
+}
+
+.admin-lead-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-chip {
+  border: 1px solid var(--accent-bg);
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+  font-size: 14px;
+}
+
+.admin-panel-root {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+}
+
+.admin-panel-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.admin-panel {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 92vh;
+  background: var(--primary-bg);
+  color: var(--primary-text);
+  border-top: 1px solid var(--green-accent);
+  border-radius: 12px 12px 0 0;
+}
+
+.admin-panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  overflow: auto;
+  padding: 1rem 1rem 0;
+}
+
+.admin-lead-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin: 0;
+}
+
+.admin-lead-field dt {
+  font-weight: 700;
+}
+
+.admin-lead-field dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.45rem;
+}
+
+.admin-lead-field a {
+  color: var(--green-accent);
+  overflow-wrap: anywhere;
+}
+
+.admin-lead-photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-lead-photos a {
+  display: block;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.admin-lead-photos img {
+  width: 7rem;
+  height: 7rem;
+  object-fit: cover;
+  background: var(--secondary-bg);
+  border-radius: 8px;
+}
+
+.admin-panel-actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+  background: var(--secondary-bg);
+  border-top: 1px solid var(--accent-bg);
+}
+
+.admin-leads .admin-button {
+  margin-top: 0;
+}
+
+.admin-button-quiet {
+  color: var(--primary-text);
+  background: transparent;
+  border: 1px solid var(--accent-color);
+}
+
+@media (min-width: 769px) {
+  .admin-panel {
+    top: 0;
+    left: auto;
+    width: min(28rem, 100%);
+    max-height: none;
+    height: 100%;
+    border-top: 0;
+    border-left: 1px solid var(--green-accent);
+    border-radius: 0;
+  }
+}
