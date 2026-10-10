@@ -90,8 +90,8 @@ function Home() {
   return (
     <div>
       <SEO
-        title="Lyfestyle Tattoos | Tampa's Premier Tattoo Studio"
-        description="Lyfestyle Tattoos - Premier Tattoo Studio in Tampa, Florida. Specializing in custom designs, Japanese, anime, and traditional styles."
+        title="Anime & Custom Tattoos in Brandon & Tampa, FL | Lyfestyle Tattoos"
+        description="Custom anime and pop-culture tattoos by Clyde Wint in Brandon, FL, serving Tampa Bay. Appointment only. Send your idea and get a quote."
         path="/"
       />
       <div id="wrapper">
@@ -151,6 +151,7 @@ function Home() {
                 <FontAwesomeIcon icon={faComment} />
                 <span>Text</span>
               </a>
+              {/* TODO: confirm this email address before publishing contact details. */}
               <a href="mailto:darkrai393@gmail.com" className="contact-link">
                 <FontAwesomeIcon icon={faEnvelope} />
                 <span>Email</span>
@@ -302,7 +303,7 @@ function Home() {
                 color: 'var(--secondary-text)',
               }}
             >
-              Premier Tattoo Studio in Tampa, Florida
+              Anime and custom tattoos in Brandon and Tampa, FL
             </h2>
             <div
               style={{
@@ -321,28 +322,11 @@ function Home() {
                   fontWeight: 'normal',
                 }}
               >
-                <span className="desktop-only">
-                  Welcome to Tampa's finest tattoo destination. At Lyfestyle
-                  Tattoos, Clyde Wint specializes in creating unique, custom
-                  tattoos that tell your story. As an experienced Tampa-based
-                  artist, he is a master of various styles:
-                </span>
-                <span
-                  className="mobile-only"
-                  style={{ display: 'block', textAlign: 'left' }}
-                >
-                  Our Tattoo Styles:
-                </span>
+                We draw custom anime and pop-culture tattoos in Brandon, FL,
+                and we book people from across Tampa Bay. These are the styles
+                we work in:
               </h3>
-              <div
-                className="styles-grid desktop-only"
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: '1rem',
-                  marginBottom: '1rem',
-                }}
-              >
+              <div className="styles-grid">
                 <div
                   className="style-box"
                   style={{ textAlign: 'center', padding: '0.5rem' }}
@@ -426,130 +410,6 @@ function Home() {
                     style={{
                       color: 'var(--secondary-text)',
                       fontSize: '0.9rem',
-                    }}
-                  >
-                    Vibrant, true-to-life color work
-                  </p>
-                </div>
-              </div>
-
-              {/* Mobile Styles Section */}
-              <div
-                className="styles-list mobile-only"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.75rem',
-                  marginBottom: '1rem',
-                }}
-              >
-                <div
-                  className="style-card"
-                  style={{
-                    backgroundColor: 'var(--accent-bg)',
-                    padding: '1rem',
-                    borderRadius: '8px',
-                  }}
-                >
-                  <h4
-                    style={{
-                      color: 'var(--primary-text)',
-                      marginBottom: '0.25rem',
-                      fontSize: '1.1rem',
-                      fontWeight: '500',
-                    }}
-                  >
-                    Traditional
-                  </h4>
-                  <p
-                    style={{
-                      color: 'var(--secondary-text)',
-                      fontSize: '0.9rem',
-                      lineHeight: '1.4',
-                    }}
-                  >
-                    Classic bold lines and timeless designs
-                  </p>
-                </div>
-                <div
-                  className="style-card"
-                  style={{
-                    backgroundColor: 'var(--accent-bg)',
-                    padding: '1rem',
-                    borderRadius: '8px',
-                  }}
-                >
-                  <h4
-                    style={{
-                      color: 'var(--primary-text)',
-                      marginBottom: '0.25rem',
-                      fontSize: '1.1rem',
-                      fontWeight: '500',
-                    }}
-                  >
-                    Japanese & Anime
-                  </h4>
-                  <p
-                    style={{
-                      color: 'var(--secondary-text)',
-                      fontSize: '0.9rem',
-                      lineHeight: '1.4',
-                    }}
-                  >
-                    Authentic Japanese and anime-inspired artwork
-                  </p>
-                </div>
-                <div
-                  className="style-card"
-                  style={{
-                    backgroundColor: 'var(--accent-bg)',
-                    padding: '1rem',
-                    borderRadius: '8px',
-                  }}
-                >
-                  <h4
-                    style={{
-                      color: 'var(--primary-text)',
-                      marginBottom: '0.25rem',
-                      fontSize: '1.1rem',
-                      fontWeight: '500',
-                    }}
-                  >
-                    Black & Grey
-                  </h4>
-                  <p
-                    style={{
-                      color: 'var(--secondary-text)',
-                      fontSize: '0.9rem',
-                      lineHeight: '1.4',
-                    }}
-                  >
-                    Detailed shading and lifelike designs
-                  </p>
-                </div>
-                <div
-                  className="style-card"
-                  style={{
-                    backgroundColor: 'var(--accent-bg)',
-                    padding: '1rem',
-                    borderRadius: '8px',
-                  }}
-                >
-                  <h4
-                    style={{
-                      color: 'var(--primary-text)',
-                      marginBottom: '0.25rem',
-                      fontSize: '1.1rem',
-                      fontWeight: '500',
-                    }}
-                  >
-                    Color Realism
-                  </h4>
-                  <p
-                    style={{
-                      color: 'var(--secondary-text)',
-                      fontSize: '0.9rem',
-                      lineHeight: '1.4',
                     }}
                   >
                     Vibrant, true-to-life color work
@@ -642,7 +502,7 @@ function Home() {
                       fontSize: '0.95rem',
                     }}
                   >
-                    Highest standards of hygiene and safety
+                    We keep the studio clean and use sterile equipment
                   </p>
                 </div>
 
@@ -791,6 +651,17 @@ function Home() {
               <span>Linktree</span>
             </a>
           </div>
+          <p
+            style={{
+              color: 'var(--secondary-text)',
+              fontSize: '0.95rem',
+              lineHeight: '1.6',
+              marginBottom: '1rem',
+            }}
+          >
+            Private studio in Brandon, FL, serving Tampa Bay. Appointment only.
+            The address comes with your booking confirmation.
+          </p>
           <p style={{ color: 'var(--secondary-text)', fontSize: '0.9rem' }}>
             © {new Date().getFullYear()} Lyfestyle Tattoos. All rights reserved.
           </p>

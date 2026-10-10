@@ -75,7 +75,7 @@ function Portfolio() {
     >
       <SEO
         title="Portfolio | Lyfestyle Tattoos"
-        description="Recent tattoo work from Lyfestyle Tattoos in Tampa, Florida."
+        description="Recent anime, black and grey, and color realism tattoos by Clyde Wint at Lyfestyle Tattoos in Brandon and Tampa, FL."
         path="/portfolio"
       />
       <div

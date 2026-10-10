@@ -13,7 +13,7 @@ function About() {
     >
       <SEO
         title="About | Lyfestyle Tattoos"
-        description="Tampa studio for custom designs, cover-ups, and styles from traditional and anime to realism, by artist Clyde Wint."
+        description="Private studio in Brandon, FL, serving Tampa Bay. Custom tattoos, including anime and pop culture, by Clyde Wint. Appointment only."
         path="/about"
       />
       <div
@@ -60,9 +60,9 @@ function About() {
                   marginBottom: '20px',
                 }}
               >
-                Welcome to Tampa's premier tattoo studio, where artistry meets
-                professionalism. We specialize in creating unique, meaningful
-                pieces that tell your story through ink.
+                We tattoo in a private studio in Brandon, FL, and we take
+                appointments from across Tampa Bay. We draw custom pieces,
+                including anime and pop culture.
               </p>
             </div>
             <div
@@ -252,10 +252,9 @@ function About() {
                   marginBottom: '30px',
                 }}
               >
-                Located in Tampa, Florida, our studio maintains the highest
-                standards of cleanliness and safety. We use only sterile
-                equipment and follow all health department regulations to ensure
-                your comfort and safety throughout your tattoo journey.
+                Private studio in Brandon, FL, serving Tampa Bay. Appointment
+                only. The address comes with your booking confirmation. We use
+                sterile equipment and follow health department rules.
               </p>
               <p
                 style={{

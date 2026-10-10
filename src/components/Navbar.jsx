@@ -97,10 +97,6 @@ function Navbar() {
           </li>
           <li id="hide">|</li>
           <li>
-            <Link to="/reviews">Reviews</Link>
-          </li>
-          <li id="hide">|</li>
-          <li>
             <a
               href="https://www.instagram.com/lyfetattooos/"
               target="_blank"
@@ -168,18 +164,6 @@ function Navbar() {
             >
               DM to Book
             </a>
-            <Link
-              to="/reviews"
-              onClick={closeMenu}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '3.5rem',
-              }}
-            >
-              Reviews
-            </Link>
             <a
               href="https://www.instagram.com/lyfetattooos/"
               target="_blank"

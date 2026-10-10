@@ -537,42 +537,20 @@ header {
   }
 
   .styles-grid {
-    display: none !important;
-  }
-
-  .styles-list {
-    display: flex !important;
-    flex-direction: column;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
     gap: 0.75rem;
-  }
-
-  .style-card {
-    background-color: var(--accent-bg);
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-    text-align: left;
-    border: 1px solid var(--green-accent);
-  }
-
-  .style-card h4 {
-    font-size: 1.1rem !important;
-    margin-bottom: 0.25rem !important;
-    font-weight: 500 !important;
-  }
-
-  .style-card p {
-    font-size: 0.9rem !important;
-    line-height: 1.4;
-    margin: 0;
   }
 }
 
-@media (min-width: 769px) {
-  .styles-list {
-    display: none !important;
-  }
+.styles-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
 
+@media (min-width: 769px) {
   .styles-grid {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr);
@@ -661,15 +639,6 @@ header {
   }
 }
 
-/* Studio Section Styles */
-.style-card {
-  transition: transform 0.3s ease;
-}
-
-.style-card:hover {
-  transform: translateY(-2px);
-}
-
 #booking > div > div {
   display: flex;
   flex-direction: column;
@@ -703,14 +672,12 @@ header {
   }
 }
 
-.style-box,
-.style-card {
+.style-box {
   border: 1px solid var(--green-accent);
   transition: all 0.3s ease;
 }
 
-.style-box:hover,
-.style-card:hover {
+.style-box:hover {
   border-color: var(--green-hover);
   box-shadow: 0 0 10px var(--green-accent);
 }
@@ -761,7 +728,6 @@ footer {
 
 /* Adjust some spacings and add transitions */
 .style-box:hover,
-.style-card:hover,
 .feature:hover {
   transform: translateY(-2px);
   box-shadow: 0 0 15px var(--green-accent);
@@ -770,13 +736,6 @@ footer {
 .styles-grid .style-box {
   background-color: var(--accent-bg);
   padding: 1rem !important;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.styles-list .style-card {
-  background-color: var(--accent-bg);
-  padding: 1rem;
   border-radius: 8px;
   transition: all 0.3s ease;
 }

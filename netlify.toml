@@ -13,14 +13,20 @@
   to = "/"
   status = 301
 
-# SPA fallback so /about, /portfolio, /reviews work on refresh or direct visit
+# Old reviews URL. Must stay ahead of the SPA fallback.
+[[redirects]]
+  from = "/reviews"
+  to = "/"
+  status = 302
+
+# SPA fallback so /about and /portfolio work on refresh or direct visit
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
 [[headers]]
-  for = "/static/*"
+  for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 

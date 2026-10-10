@@ -140,6 +140,17 @@ function Footer() {
         <p
           style={{
             color: 'var(--secondary-text)',
+            fontSize: 'clamp(0.9rem, 2vw, 1rem)',
+            lineHeight: '1.6',
+            marginBottom: '1rem',
+          }}
+        >
+          Private studio in Brandon, FL, serving Tampa Bay. Appointment only.
+          The address comes with your booking confirmation.
+        </p>
+        <p
+          style={{
+            color: 'var(--secondary-text)',
             fontSize: 'clamp(0.8rem, 1.8vw, 0.9rem)',
           }}
         >
