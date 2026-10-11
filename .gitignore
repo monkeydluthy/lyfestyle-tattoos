@@ -22,3 +22,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# inventory CSV, images, and the import manifest
+scripts/import/*
+!scripts/import/import-works.mjs
