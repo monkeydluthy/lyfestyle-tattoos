@@ -140,7 +140,7 @@ function WorkGallery({ works }) {
   }
 
   return (
-    <section className="work-gallery" id="work">
+    <section className="work-gallery">
       <h2>The work</h2>
       {groups.map((group) => (
         <div className="work-group" key={group.key}>

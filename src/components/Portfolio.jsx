@@ -1,10 +1,10 @@
+import { lazy, Suspense } from 'react';
 import Footer from './Footer';
 import SEO from './SEO';
-import WorkGallery from './WorkGallery';
-import { usePublishedWorks } from '../lib/works';
+
+const PublishedGallery = lazy(() => import('./PublishedGallery'));
 
 function Portfolio() {
-  const { works, status } = usePublishedWorks();
 
   return (
     <div
@@ -49,14 +49,16 @@ function Portfolio() {
           >
             Check out some of our recent work
           </h3>
-          {status === 'ready' && works.length > 0 ? (
-            <WorkGallery works={works} />
-          ) : (
-            <p className="work-note" style={{ textAlign: 'center' }}>
-              The work is loading, see our{' '}
-              <a href="https://ig.me/m/lyfetattooos">Instagram</a>.
-            </p>
-          )}
+          <Suspense
+            fallback={
+              <p className="work-note" style={{ textAlign: 'center' }}>
+                The work is loading, see our{' '}
+                <a href="https://ig.me/m/lyfetattooos">Instagram</a>.
+              </p>
+            }
+          >
+            <PublishedGallery />
+          </Suspense>
         </div>
       </div>
       <Footer />

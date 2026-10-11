@@ -1,7 +1,8 @@
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { trackEvent } from '../utils/analytics';
-import { heroPieces, usePublishedWorks, workImageUrl } from '../lib/works';
+import featuredSnapshot from '../generated/featured.json';
 import SEO from './SEO';
-import WorkGallery from './WorkGallery';
+import './work.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhone, faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
@@ -11,10 +12,78 @@ import {
   faXTwitter,
 } from '@fortawesome/free-brands-svg-icons';
 
+const PublishedGallery = lazy(() => import('./PublishedGallery'));
+const SNAPSHOT = Array.isArray(featuredSnapshot?.pieces) ? featuredSnapshot.pieces : [];
+const HERO_SLOTS = [0, 1, 2, 3];
+const TILE_WIDTH = 360;
+const TILE_HEIGHT = 480;
+
+function samePieces(left, right) {
+  if (left.length !== right.length) return false;
+  return left.every(
+    (piece, index) =>
+      piece.id === right[index]?.id &&
+      piece.thumb_url === right[index]?.thumb_url &&
+      piece.alt_text === right[index]?.alt_text
+  );
+}
+
 function Home() {
-  const { works, status } = usePublishedWorks();
-  const featured = heroPieces(works);
-  const unavailable = status !== 'ready' || featured.length === 0;
+  const [pieces, setPieces] = useState(SNAPSHOT);
+  const [heroSettled, setHeroSettled] = useState(false);
+  const [galleryReady, setGalleryReady] = useState(false);
+  const galleryRef = useRef(null);
+  const showFallback = heroSettled && pieces.length === 0;
+
+  useEffect(() => {
+    let active = true;
+    import('../lib/refreshHero')
+      .then((mod) => mod.loadHeroPieces())
+      .then((result) => {
+        if (!active) return;
+        setHeroSettled(true);
+        if (result.failed) return;
+        setPieces((current) => (samePieces(current, result.pieces) ? current : result.pieces));
+      })
+      .catch(() => {
+        if (active) setHeroSettled(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const node = galleryRef.current;
+    if (!node) return undefined;
+    let started = false;
+    const start = () => {
+      if (started) return;
+      started = true;
+      setGalleryReady(true);
+    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) start();
+      },
+      { rootMargin: '600px' }
+    );
+    observer.observe(node);
+    let idleId = 0;
+    let timer = 0;
+    if (typeof window.requestIdleCallback === 'function') {
+      idleId = window.requestIdleCallback(start, { timeout: 2000 });
+    } else {
+      timer = window.setTimeout(start, 200);
+    }
+    return () => {
+      observer.disconnect();
+      if (idleId && typeof window.cancelIdleCallback === 'function') {
+        window.cancelIdleCallback(idleId);
+      }
+      if (timer) window.clearTimeout(timer);
+    };
+  }, []);
 
   return (
     <div>
@@ -37,28 +106,41 @@ function Home() {
               See the work
             </a>
           </div>
-          {unavailable ? (
+          {showFallback ? (
             <p className="work-note">
               The work is loading, see our{' '}
               <a href="https://ig.me/m/lyfetattooos">Instagram</a>.
             </p>
           ) : (
             <div className="hero-pieces">
-              {featured.map((work, index) => (
-                <div className="work-tile" key={work.id}>
-                  <img
-                    src={workImageUrl(work.thumb_path)}
-                    alt={work.alt_text || work.title || 'Tattoo'}
-                    fetchPriority={index === 0 ? 'high' : 'auto'}
-                    loading="eager"
-                  />
-                </div>
-              ))}
+              {HERO_SLOTS.map((index) => {
+                const piece = pieces[index];
+                return (
+                  <div className="work-tile" key={index}>
+                    {piece?.thumb_url ? (
+                      <img
+                        src={piece.thumb_url}
+                        alt={piece.alt_text || piece.title || 'Tattoo'}
+                        width={TILE_WIDTH}
+                        height={TILE_HEIGHT}
+                        fetchPriority={index === 0 ? 'high' : undefined}
+                        loading="eager"
+                      />
+                    ) : null}
+                  </div>
+                );
+              })}
             </div>
           )}
         </section>
 
-        {status === 'ready' && works.length > 0 ? <WorkGallery works={works} /> : null}
+        <div id="work" className="home-gallery" ref={galleryRef}>
+          {galleryReady ? (
+            <Suspense fallback={null}>
+              <PublishedGallery />
+            </Suspense>
+          ) : null}
+        </div>
 
         <section className="start-soon" id="start">
           <h2>Start your tattoo</h2>
@@ -515,3 +597,4 @@ function Home() {
 }
 
 export default Home;
+

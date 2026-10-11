@@ -25,6 +25,9 @@ yarn-error.log*
 
 scripts/screens/
 
+# generated at build time by scripts/build-featured.mjs
+src/generated/
+
 # inventory CSV, images, and the import manifest
 scripts/import/*
 !scripts/import/import-works.mjs

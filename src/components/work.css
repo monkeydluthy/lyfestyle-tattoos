@@ -93,6 +93,10 @@
   color: var(--green-accent);
 }
 
+.home-gallery {
+  min-height: 86rem;
+}
+
 .work-gallery {
   padding: 1.5rem 0 0.5rem;
 }
