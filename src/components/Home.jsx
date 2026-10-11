@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
 import { trackEvent } from '../utils/analytics';
+import { heroPieces, usePublishedWorks, workImageUrl } from '../lib/works';
 import SEO from './SEO';
+import WorkGallery from './WorkGallery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhone, faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
@@ -11,81 +12,9 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 
 function Home() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const images = [
-    'mihawk.jpeg',
-    'mahoraga.jpeg',
-    'berserk.jpeg',
-    'asta.jpeg',
-    'vines.jpeg',
-    'jack-betterqual.jpeg',
-    'sasuke.jpeg',
-    'tiger.jpeg',
-    'des.jpeg',
-    'gaara-1.jpeg',
-    'ch-drunk.jpeg',
-    'boruto.jpeg',
-    'gogeta.jpeg',
-    'ghost.jpeg',
-    'toji.jpeg',
-    'law.jpeg',
-    'n.jpeg',
-    'ian-6.jpeg',
-    'shenron.jpeg',
-    'tiger-2.jpeg',
-  ];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (selectedImage === null) {
-        // Only auto-advance if modal is closed
-        setCurrentSlide((prev) => (prev + 1) % images.length);
-      }
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [images.length, selectedImage]);
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % images.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
-  };
-
-  const handleImageClick = (index) => {
-    setSelectedImage(index);
-  };
-
-  const handleClose = () => {
-    setSelectedImage(null);
-  };
-
-  const handlePrevious = (e) => {
-    e.stopPropagation();
-    setSelectedImage((prev) => (prev > 0 ? prev - 1 : images.length - 1));
-  };
-
-  const handleNext = (e) => {
-    e.stopPropagation();
-    setSelectedImage((prev) => (prev < images.length - 1 ? prev + 1 : 0));
-  };
-
-  const handleKeyDown = (e) => {
-    if (selectedImage !== null) {
-      if (e.key === 'ArrowLeft') handlePrevious(e);
-      if (e.key === 'ArrowRight') handleNext(e);
-      if (e.key === 'Escape') handleClose();
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [selectedImage]);
+  const { works, status } = usePublishedWorks();
+  const featured = heroPieces(works);
+  const unavailable = status !== 'ready' || featured.length === 0;
 
   return (
     <div>
@@ -95,6 +24,52 @@ function Home() {
         path="/"
       />
       <div id="wrapper">
+        <section className="public-hero">
+          <h1>Custom anime and pop-culture tattoos in Brandon and Tampa.</h1>
+          <p className="hero-sub">
+            Appointment only. Send your idea, get a quote, lock your date with a deposit.
+          </p>
+          <div className="hero-actions">
+            <a className="hero-primary" href="#start">
+              Start Your Tattoo
+            </a>
+            <a className="hero-secondary" href="#work">
+              See the work
+            </a>
+          </div>
+          {unavailable ? (
+            <p className="work-note">
+              The work is loading, see our{' '}
+              <a href="https://ig.me/m/lyfetattooos">Instagram</a>.
+            </p>
+          ) : (
+            <div className="hero-pieces">
+              {featured.map((work, index) => (
+                <div className="work-tile" key={work.id}>
+                  <img
+                    src={workImageUrl(work.thumb_path)}
+                    alt={work.alt_text || work.title || 'Tattoo'}
+                    fetchPriority={index === 0 ? 'high' : 'auto'}
+                    loading="eager"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {status === 'ready' && works.length > 0 ? <WorkGallery works={works} /> : null}
+
+        <section className="start-soon" id="start">
+          <h2>Start your tattoo</h2>
+          <p>
+            The request form is coming soon. In the meantime, send your idea on Instagram.
+          </p>
+          <p>
+            <a href="https://ig.me/m/lyfetattooos">Message on Instagram</a>
+          </p>
+        </section>
+
         <div id="booking">
           <div
             style={{
@@ -160,151 +135,10 @@ function Home() {
           </div>
         </div>
 
-        <section>
-          <div className="carousel">
-            <button className="carousel-button prev" onClick={prevSlide}>
-              &#8678;
-            </button>
-            <button className="carousel-button next" onClick={nextSlide}>
-              &#8680;
-            </button>
-            <ul>
-              {images.map((image, index) => (
-                <li
-                  key={index}
-                  className="slide"
-                  data-active={index === currentSlide ? true : undefined}
-                  onClick={() => handleImageClick(index)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <img
-                    src={`/resources/images/${image}`}
-                    alt={`Slide ${index + 1}`}
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* Modal Gallery */}
-        {selectedImage !== null && (
-          <div
-            onClick={handleClose}
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0.9)',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              zIndex: 1000,
-            }}
-          >
-            {/* Navigation Buttons */}
-            <button
-              onClick={handlePrevious}
-              style={{
-                position: 'absolute',
-                left: 'clamp(0.5rem, 2vw, 2rem)',
-                backgroundColor: 'transparent',
-                border: 'none',
-                color: 'white',
-                fontSize: 'clamp(1.5rem, 3vw, 2rem)',
-                cursor: 'pointer',
-                padding: 'clamp(0.5rem, 2vw, 1rem)',
-                zIndex: 1001,
-              }}
-            >
-              ←
-            </button>
-            <button
-              onClick={handleNext}
-              style={{
-                position: 'absolute',
-                right: 'clamp(0.5rem, 2vw, 2rem)',
-                backgroundColor: 'transparent',
-                border: 'none',
-                color: 'white',
-                fontSize: 'clamp(1.5rem, 3vw, 2rem)',
-                cursor: 'pointer',
-                padding: 'clamp(0.5rem, 2vw, 1rem)',
-                zIndex: 1001,
-              }}
-            >
-              →
-            </button>
-
-            {/* Close Button */}
-            <button
-              onClick={handleClose}
-              style={{
-                position: 'absolute',
-                top: 'clamp(0.5rem, 2vw, 2rem)',
-                right: 'clamp(0.5rem, 2vw, 2rem)',
-                backgroundColor: 'transparent',
-                border: 'none',
-                color: 'white',
-                fontSize: 'clamp(1.5rem, 3vw, 2rem)',
-                cursor: 'pointer',
-                padding: 'clamp(0.5rem, 2vw, 1rem)',
-                zIndex: 1001,
-              }}
-            >
-              ×
-            </button>
-
-            {/* Modal Image */}
-            <div
-              style={{
-                position: 'relative',
-                width: '95%',
-                height: '90%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: 'clamp(1rem, 3vw, 2rem)',
-              }}
-            >
-              <img
-                src={`/resources/images/${images[selectedImage]}`}
-                alt={`Slide ${selectedImage + 1}`}
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '100%',
-                  objectFit: 'contain',
-                  borderRadius: '8px',
-                }}
-              />
-            </div>
-          </div>
-        )}
-
         <div className="content">
           <div
             style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 0' }}
           >
-            <h1
-              style={{
-                fontSize: '3.5rem',
-                marginBottom: '1.5rem',
-                color: 'var(--primary-text)',
-              }}
-            >
-              Lyfestyle Tattoos
-            </h1>
-            <h2
-              style={{
-                fontSize: '2.2rem',
-                marginBottom: '2rem',
-                color: 'var(--secondary-text)',
-              }}
-            >
-              Anime and custom tattoos in Brandon and Tampa, FL
-            </h2>
             <div
               style={{
                 backgroundColor: 'var(--secondary-bg)',
