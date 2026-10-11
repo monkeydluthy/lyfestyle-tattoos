@@ -24,3 +24,7 @@ yarn-debug.log*
 yarn-error.log*
 
 scripts/screens/
+
+# inventory CSV, images, and the import manifest
+scripts/import/*
+!scripts/import/import-works.mjs
