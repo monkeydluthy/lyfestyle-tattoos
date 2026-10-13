@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import SEO from './SEO';
 
 function Thanks() {
@@ -29,9 +29,9 @@ function Thanks() {
           business days.
         </p>
         <p>
-          <Link className="hero-primary" to="/#work">
+          <a className="hero-primary" href="/#work">
             Back to the gallery
-          </Link>
+          </a>
         </p>
       </div>
     </div>

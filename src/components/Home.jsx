@@ -64,6 +64,11 @@ function Home() {
   }, []);
 
   useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (id) document.getElementById(id)?.scrollIntoView();
+  }, []);
+
+  useEffect(() => {
     let active = true;
     import('../lib/refreshContent')
       .then((mod) => mod.loadSiteContent())
