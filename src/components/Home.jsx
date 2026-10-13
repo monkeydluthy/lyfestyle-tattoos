@@ -1,7 +1,9 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { trackEvent } from '../utils/analytics';
 import featuredSnapshot from '../generated/featured.json';
+import contentSnapshot from '../generated/content.json';
 import SEO from './SEO';
+import { HowItWorks, Pricing, Policies } from './InfoBlocks';
 import './work.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhone, faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
@@ -13,7 +15,9 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 
 const PublishedGallery = lazy(() => import('./PublishedGallery'));
+const IntakeForm = lazy(() => import('./IntakeForm'));
 const SNAPSHOT = Array.isArray(featuredSnapshot?.pieces) ? featuredSnapshot.pieces : [];
+const CONTENT_SNAPSHOT = contentSnapshot && typeof contentSnapshot === 'object' ? contentSnapshot : {};
 const HERO_SLOTS = [0, 1, 2, 3];
 const TILE_WIDTH = 360;
 const TILE_HEIGHT = 480;
@@ -32,7 +36,13 @@ function Home() {
   const [pieces, setPieces] = useState(SNAPSHOT);
   const [heroSettled, setHeroSettled] = useState(false);
   const [galleryReady, setGalleryReady] = useState(false);
+  const [content, setContent] = useState(CONTENT_SNAPSHOT);
+  const [formReady, setFormReady] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return window.location.hash === '#start' || params.has('ref');
+  });
   const galleryRef = useRef(null);
+  const startRef = useRef(null);
   const showFallback = heroSettled && pieces.length === 0;
 
   useEffect(() => {
@@ -52,6 +62,33 @@ function Home() {
       active = false;
     };
   }, []);
+
+  useEffect(() => {
+    let active = true;
+    import('../lib/refreshContent')
+      .then((mod) => mod.loadSiteContent())
+      .then((result) => {
+        if (!active || result.failed) return;
+        setContent((current) => ({ ...current, ...result.content }));
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const node = startRef.current;
+    if (!node || formReady) return undefined;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) setFormReady(true);
+      },
+      { rootMargin: '800px' }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [formReady]);
 
   useEffect(() => {
     const node = galleryRef.current;
@@ -142,14 +179,21 @@ function Home() {
           ) : null}
         </div>
 
-        <section className="start-soon" id="start">
-          <h2>Start your tattoo</h2>
-          <p>
-            The request form is coming soon. In the meantime, send your idea on Instagram.
-          </p>
-          <p>
-            <a href="https://ig.me/m/lyfetattooos">Message on Instagram</a>
-          </p>
+        <HowItWorks />
+        <Pricing pricing={content.pricing} />
+        <Policies policies={content.policies} />
+
+        <section className="intake" id="start" ref={startRef} aria-labelledby="start-heading">
+          <h2 id="start-heading">Start your tattoo</h2>
+          {formReady ? (
+            <Suspense fallback={<p className="work-note">Loading the request form.</p>}>
+              <IntakeForm />
+            </Suspense>
+          ) : (
+            <p className="work-note">
+              Or message Clyde on <a href="https://ig.me/m/lyfetattooos">Instagram @lyfetattooos</a>.
+            </p>
+          )}
         </section>
 
         <div id="booking">

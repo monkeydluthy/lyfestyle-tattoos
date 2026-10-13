@@ -82,14 +82,14 @@
 }
 
 .work-note,
-.start-soon p {
+.intake p {
   margin: 0.75rem 0 0;
   color: var(--secondary-text);
   line-height: 1.45;
 }
 
 .work-note a,
-.start-soon a {
+.intake a {
   color: var(--green-accent);
 }
 
@@ -144,17 +144,118 @@
   color: var(--secondary-text);
 }
 
-.start-soon {
+.intake {
   margin: 2rem 0;
   padding: 1.25rem;
+  min-height: 46rem;
   border: 1px solid var(--accent-bg);
   border-radius: 8px;
   background: var(--secondary-bg);
 }
 
-.start-soon h2 {
+.intake h2 {
   margin-bottom: 0.5rem;
   font-size: 1.6rem;
+}
+
+.info-block {
+  margin: 2rem 0;
+}
+
+.info-block h2 {
+  margin-bottom: 0.75rem;
+  font-size: 1.6rem;
+}
+
+.steps {
+  margin: 0;
+  padding-left: 1.4rem;
+  color: var(--secondary-text);
+  line-height: 1.5;
+}
+
+.steps li {
+  margin-bottom: 0.4rem;
+}
+
+.steps li::marker {
+  color: var(--green-accent);
+  font-weight: 700;
+}
+
+.price-minimum {
+  margin: 0 0 0.75rem;
+  color: var(--secondary-text);
+}
+
+.price-minimum strong {
+  color: var(--green-accent);
+  font-size: 1.3rem;
+}
+
+.price-tiers {
+  margin: 0;
+  border: 1px solid var(--accent-bg);
+  border-radius: 6px;
+  background: var(--secondary-bg);
+}
+
+.price-tiers > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--accent-bg);
+}
+
+.price-tiers > div:last-child {
+  border-bottom: 0;
+}
+
+.price-tiers dt {
+  color: var(--secondary-text);
+}
+
+.price-tiers dd {
+  margin: 0;
+  color: var(--primary-text);
+  font-weight: 700;
+}
+
+.info-note {
+  margin: 0.75rem 0 0;
+  color: var(--secondary-text);
+  line-height: 1.45;
+}
+
+.policy-list details {
+  border: 1px solid var(--accent-bg);
+  border-radius: 6px;
+  background: var(--secondary-bg);
+  margin-bottom: 0.5rem;
+}
+
+.policy-list summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  color: var(--primary-text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.policy-list summary:focus-visible {
+  outline: 2px solid var(--green-accent);
+  outline-offset: 2px;
+}
+
+.policy-list details p {
+  margin: 0;
+  padding: 0 1rem 0.9rem;
+  color: var(--secondary-text);
+  line-height: 1.45;
 }
 
 .lightbox {

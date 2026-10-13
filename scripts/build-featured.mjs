@@ -16,6 +16,46 @@ function write(pieces) {
   writeFileSync(outFile, `${JSON.stringify({ pieces }, null, 2)}\n`);
 }
 
+const contentFile = path.resolve('src/generated/content.json');
+const CONTENT_KEYS = ['pricing', 'policies'];
+
+function writeContent(content) {
+  mkdirSync(path.dirname(contentFile), { recursive: true });
+  writeFileSync(contentFile, `${JSON.stringify(content, null, 2)}\n`);
+}
+
+async function snapshotContent() {
+  if (!url || !key) {
+    writeContent({});
+    return;
+  }
+  try {
+    const endpoint = new URL('/rest/v1/site_content', url);
+    endpoint.searchParams.set('select', 'key,value');
+    endpoint.searchParams.set('key', `in.(${CONTENT_KEYS.join(',')})`);
+    const response = await fetch(endpoint, {
+      headers: {
+        apikey: key,
+        authorization: `Bearer ${key}`,
+        accept: 'application/json',
+      },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!response.ok) throw new Error(`site_content request failed (${response.status})`);
+    const rows = await response.json();
+    if (!Array.isArray(rows)) throw new Error('site_content response was not a list');
+    const content = {};
+    for (const row of rows) {
+      if (CONTENT_KEYS.includes(row.key)) content[row.key] = row.value;
+    }
+    writeContent(content);
+    console.log(`Content snapshot wrote ${Object.keys(content).join(', ') || 'nothing'}.`);
+  } catch (error) {
+    console.warn(`Content snapshot unavailable (${error.message}). Writing an empty snapshot.`);
+    writeContent({});
+  }
+}
+
 function publicThumbUrl(base, objectPath) {
   const encoded = String(objectPath)
     .split('/')
@@ -62,4 +102,5 @@ async function main() {
   }
 }
 
-main();
+await snapshotContent();
+await main();

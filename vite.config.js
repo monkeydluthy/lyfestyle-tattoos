@@ -5,10 +5,16 @@ import react from '@vitejs/plugin-react';
 
 const snapshotPath = path.resolve('src/generated/featured.json');
 
+const contentPath = path.resolve('src/generated/content.json');
+
 function ensureSnapshot() {
-  if (existsSync(snapshotPath)) return;
   mkdirSync(path.dirname(snapshotPath), { recursive: true });
-  writeFileSync(snapshotPath, `${JSON.stringify({ pieces: [] }, null, 2)}\n`);
+  if (!existsSync(snapshotPath)) {
+    writeFileSync(snapshotPath, `${JSON.stringify({ pieces: [] }, null, 2)}\n`);
+  }
+  if (!existsSync(contentPath)) {
+    writeFileSync(contentPath, `${JSON.stringify({}, null, 2)}\n`);
+  }
 }
 
 function readSnapshot() {
