@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Footer from './Footer';
 import SEO from './SEO';
 
@@ -95,7 +96,6 @@ function About() {
               backgroundColor: 'var(--secondary-bg)',
               padding: 'clamp(20px, 5vw, 60px)',
               borderRadius: '12px',
-              marginBottom: '60px',
               marginBottom: '100px',
             }}
           >
@@ -188,11 +188,7 @@ function About() {
                     backgroundColor: 'var(--secondary-bg)',
                     padding: '40px',
                     borderRadius: '12px',
-                    transition: 'transform 0.3s ease',
                     cursor: 'default',
-                    ':hover': {
-                      transform: 'translateY(-5px)',
-                    },
                   }}
                 >
                   <h3
@@ -223,7 +219,7 @@ function About() {
             className="featured-section"
             style={{
               backgroundColor: 'var(--secondary-bg)',
-              padding: '60px',
+              padding: 'clamp(20px, 5vw, 60px)',
               borderRadius: '12px',
             }}
           >
@@ -268,6 +264,21 @@ function About() {
                 bring your vision to life.
               </p>
             </div>
+          </div>
+
+          <div style={{ textAlign: 'center', margin: '60px 0 20px' }}>
+            <h2
+              style={{
+                fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+                marginBottom: '20px',
+                fontWeight: '500',
+              }}
+            >
+              Have an idea?
+            </h2>
+            <Link className="hero-primary" to="/#start">
+              Start a request
+            </Link>
           </div>
         </div>
       </div>
