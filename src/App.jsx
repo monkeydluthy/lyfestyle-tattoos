@@ -14,6 +14,7 @@ import SEO from './components/SEO';
 import './index.css';
 
 const AdminApp = lazy(() => import('./admin/AdminApp'));
+const Thanks = lazy(() => import('./components/Thanks'));
 
 const GA_MEASUREMENT_ID = 'G-R3RBQDCXX4';
 
@@ -105,6 +106,14 @@ function PublicSite() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/portfolio" element={<Portfolio />} />
+        <Route
+          path="/thanks"
+          element={
+            <Suspense fallback={null}>
+              <Thanks />
+            </Suspense>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
