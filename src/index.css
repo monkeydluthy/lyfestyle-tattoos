@@ -115,30 +115,6 @@ header {
   outline-offset: 2px;
 }
 
-/* Booking Section Styles */
-#booking {
-  background-color: var(--secondary-bg);
-  padding: clamp(1rem, 3vw, 1.5rem);
-  margin: 3rem 0 4rem;
-  border-radius: 8px;
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid var(--green-accent);
-  box-shadow: 0 0 20px rgba(127, 255, 127, 0.1);
-}
-
-#booking p {
-  font-size: clamp(1.1rem, 3vw, 1.5rem);
-  margin-bottom: 0;
-}
-
-#booking-images {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
 #box {
   text-align: center;
 }
@@ -476,35 +452,6 @@ header {
     display: none;
   }
 
-  #booking {
-    padding: clamp(1.5rem, 4vw, 2rem);
-    margin: clamp(2rem, 5vw, 3rem) 0;
-  }
-
-  #booking p {
-    font-size: clamp(1rem, 3.5vw, 1.3rem);
-    line-height: 1.5;
-  }
-
-  #booking > div {
-    gap: 1.5rem;
-  }
-
-  #booking .contact-link {
-    width: 100%;
-    padding: clamp(0.6rem, 2vw, 0.8rem) clamp(1rem, 3vw, 1.5rem);
-    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-    justify-content: center;
-    margin: 0;
-  }
-
-  #booking > div > div {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
   .carousel {
     height: clamp(300px, 70vw, 500px);
     margin-bottom: clamp(2rem, 5vw, 3rem);
@@ -580,39 +527,6 @@ header {
 
   #wrapper {
     padding: 0 16px;
-  }
-}
-
-#booking > div > div {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-  #booking > div > div {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-  }
-
-  .contact-link {
-    flex: 1;
-  }
-}
-
-.contact-links-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-  .contact-links-container {
-    flex-direction: row !important;
-    gap: 2rem;
   }
 }
 

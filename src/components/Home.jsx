@@ -1,14 +1,10 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
-import { trackEvent } from '../utils/analytics';
 import featuredSnapshot from '../generated/featured.json';
 import contentSnapshot from '../generated/content.json';
 import SEO from './SEO';
 import Footer from './Footer';
 import { HowItWorks, Pricing, Policies } from './InfoBlocks';
 import './work.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { faComment } from '@fortawesome/free-solid-svg-icons';
 
 const PublishedGallery = lazy(() => import('./PublishedGallery'));
 const IntakeForm = lazy(() => import('./IntakeForm'));
@@ -191,71 +187,6 @@ function Home() {
             </p>
           )}
         </section>
-
-        <div id="booking">
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '1.5rem',
-              padding: '0',
-            }}
-          >
-            <p
-              style={{
-                margin: '0',
-                fontSize: '1.2rem',
-                textAlign: 'center',
-                lineHeight: '1.4',
-              }}
-            >
-              <span className="desktop-only">
-                Contact us to Book a Consultation Today
-              </span>
-              <span className="mobile-only">Book a Consultation</span>
-            </p>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1rem',
-                width: '100%',
-              }}
-              className="contact-links-container"
-            >
-              <a
-                href="tel:+16562401034"
-                className="contact-link"
-                onClick={() =>
-                  trackEvent('click_to_call', {
-                    link_location: 'home',
-                  })
-                }
-              >
-                <FontAwesomeIcon icon={faPhone} />
-                <span>Call</span>
-              </a>
-              <a
-                href="sms:+16562401034"
-                className="contact-link"
-                onClick={() =>
-                  trackEvent('click_to_text', {
-                    link_location: 'home',
-                  })
-                }
-              >
-                <FontAwesomeIcon icon={faComment} />
-                <span>Text</span>
-              </a>
-              {/* TODO: confirm this email address before publishing contact details. */}
-              <a href="mailto:darkrai393@gmail.com" className="contact-link">
-                <FontAwesomeIcon icon={faEnvelope} />
-                <span>Email</span>
-              </a>
-            </div>
-          </div>
-        </div>
       </div>
       <Footer />
     </div>
