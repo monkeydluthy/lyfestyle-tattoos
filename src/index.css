@@ -86,38 +86,33 @@ header {
   border: 1px solid transparent;
 }
 
-#nav ul li#hide {
-  color: var(--accent-color);
-  font-size: 1.2rem;
-}
-
 #nav ul li a:hover {
   color: var(--green-accent);
   border-color: var(--green-accent);
 }
 
-/* Booking Section Styles */
-#booking {
-  background-color: var(--secondary-bg);
-  padding: clamp(1rem, 3vw, 1.5rem);
-  margin: 3rem 0 4rem;
-  border-radius: 8px;
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid var(--green-accent);
-  box-shadow: 0 0 20px rgba(127, 255, 127, 0.1);
+.desktop-menu-wrap {
+  margin-left: auto;
 }
 
-#booking p {
-  font-size: clamp(1.1rem, 3vw, 1.5rem);
-  margin-bottom: 0;
+#nav ul li a.nav-cta {
+  background-color: var(--green-accent);
+  border-color: var(--green-accent);
+  color: var(--primary-bg);
+  font-weight: 700;
 }
 
-#booking-images {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 2rem;
+#nav ul li a.nav-cta:hover {
+  background-color: var(--green-hover);
+  border-color: var(--green-hover);
+  color: var(--primary-bg);
+}
+
+#nav a:focus-visible,
+.hamburger-button:focus-visible,
+.mobile-menu a:focus-visible {
+  outline: 2px solid var(--green-accent);
+  outline-offset: 2px;
 }
 
 #box {
@@ -326,49 +321,11 @@ header {
   box-shadow: 0 0 20px rgba(127, 255, 127, 0.15);
 }
 
-/* Why Choose Section Styles */
-.choose {
-  margin: 0 1rem;
-  border: 1px solid var(--green-accent) !important;
-  box-shadow: 0 0 20px rgba(127, 255, 127, 0.1);
-}
-
-.feature {
-  text-align: center;
-  padding: 1.5rem;
-  border-radius: 8px;
-  background-color: var(--accent-bg);
-  transition: all 0.3s ease;
-}
-
-.feature:hover {
-  box-shadow: 0 0 10px var(--green-accent);
-}
-
-.feature h4 {
-  position: relative;
-  display: inline-block;
-}
-
-.feature h4:after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 2px;
-  background-color: var(--green-accent);
-  transition: width 0.3s ease;
-}
-
-.feature:hover h4:after {
-  width: 100%;
-}
-
 /* Mobile Menu Styles */
 .hamburger-button {
   display: none;
+  min-width: 44px;
+  min-height: 44px;
   background: none;
   border: 1px solid transparent;
   color: var(--primary-text);
@@ -398,13 +355,14 @@ header {
   align-items: center;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
   border: 1px solid var(--green-accent);
 }
 
 .mobile-menu-overlay.active {
   opacity: 1;
   visibility: visible;
+  transition-delay: 0s;
 }
 
 .mobile-menu {
@@ -422,7 +380,7 @@ header {
   text-decoration: none;
   font-size: 18px;
   padding: 16px;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
   border-radius: 8px;
   background-color: var(--secondary-bg);
   display: flex;
@@ -436,6 +394,16 @@ header {
   background-color: var(--green-accent);
   color: var(--primary-bg);
   transform: translateY(-2px);
+}
+
+.mobile-menu a.mobile-menu-cta {
+  background-color: var(--green-accent);
+  color: var(--primary-bg);
+  font-weight: 700;
+}
+
+.mobile-menu a.mobile-menu-cta:hover {
+  background-color: var(--green-hover);
 }
 
 /* Responsive Design */
@@ -475,41 +443,13 @@ header {
     margin-left: 4px;
   }
 
-  .desktop-menu {
+  .desktop-menu,
+  .desktop-menu-wrap {
     display: none !important;
   }
 
   #nav ul {
     display: none;
-  }
-
-  #booking {
-    padding: clamp(1.5rem, 4vw, 2rem);
-    margin: clamp(2rem, 5vw, 3rem) 0;
-  }
-
-  #booking p {
-    font-size: clamp(1rem, 3.5vw, 1.3rem);
-    line-height: 1.5;
-  }
-
-  #booking > div {
-    gap: 1.5rem;
-  }
-
-  #booking .contact-link {
-    width: 100%;
-    padding: clamp(0.6rem, 2vw, 0.8rem) clamp(1rem, 3vw, 1.5rem);
-    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-    justify-content: center;
-    margin: 0;
-  }
-
-  #booking > div > div {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
   }
 
   .carousel {
@@ -535,39 +475,6 @@ header {
   .content > div {
     margin-bottom: clamp(2rem, 5vw, 3rem);
   }
-
-  .styles-grid {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 0.75rem;
-  }
-}
-
-.styles-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-@media (min-width: 769px) {
-  .styles-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-
-  .style-box {
-    padding: 1rem !important;
-    background-color: var(--accent-bg);
-    border-radius: 8px;
-    border: 1px solid var(--green-accent);
-  }
-
-  .style-box h4 {
-    font-size: 1.2rem !important;
-    margin-bottom: 0.75rem !important;
-  }
 }
 
 /* Responsive Text Display */
@@ -586,22 +493,6 @@ header {
 
   .mobile-only {
     display: none;
-  }
-}
-
-/* Styles Section */
-@media (min-width: 768px) {
-  .style-box {
-    padding: 1rem !important;
-  }
-
-  .style-box h4 {
-    font-size: 1.2rem !important;
-    margin-bottom: 0.75rem !important;
-  }
-
-  .style-box + .style-box {
-    margin-top: 0;
   }
 }
 
@@ -637,49 +528,6 @@ header {
   #wrapper {
     padding: 0 16px;
   }
-}
-
-#booking > div > div {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-  #booking > div > div {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-  }
-
-  .contact-link {
-    flex: 1;
-  }
-}
-
-.contact-links-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-  .contact-links-container {
-    flex-direction: row !important;
-    gap: 2rem;
-  }
-}
-
-.style-box {
-  border: 1px solid var(--green-accent);
-  transition: all 0.3s ease;
-}
-
-.style-box:hover {
-  border-color: var(--green-hover);
-  box-shadow: 0 0 10px var(--green-accent);
 }
 
 footer a {
@@ -724,20 +572,6 @@ footer {
   margin-top: 4rem;
   width: 100%;
   border-top: 1px solid var(--green-accent) !important;
-}
-
-/* Adjust some spacings and add transitions */
-.style-box:hover,
-.feature:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 15px var(--green-accent);
-}
-
-.styles-grid .style-box {
-  background-color: var(--accent-bg);
-  padding: 1rem !important;
-  border-radius: 8px;
-  transition: all 0.3s ease;
 }
 
 /* Artist Section and Studio Section */
@@ -794,4 +628,56 @@ footer {
 .portfolio-item:hover {
   box-shadow: 0 0 15px rgba(127, 255, 127, 0.2);
   transform: translateY(-2px);
+}
+
+/* Mobile bottom bar */
+.mobile-cta {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .App.has-cta {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+  }
+
+  .mobile-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 900;
+    display: block;
+    padding: 0.6rem 16px calc(0.6rem + env(safe-area-inset-bottom));
+    background-color: var(--secondary-bg);
+    border-top: 1px solid var(--green-accent);
+    transition: transform 0.2s ease, visibility 0.2s ease;
+  }
+
+  .mobile-cta.is-hidden {
+    transform: translateY(100%);
+    visibility: hidden;
+  }
+
+  .mobile-cta a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    border-radius: 4px;
+    background-color: var(--green-accent);
+    color: var(--primary-bg);
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .mobile-cta a:focus-visible {
+    outline: 2px solid var(--primary-text);
+    outline-offset: 2px;
+  }
 }

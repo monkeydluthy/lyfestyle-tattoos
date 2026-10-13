@@ -1,91 +1,118 @@
-import React, { useState, useEffect } from 'react';
-import { trackEvent } from '../utils/analytics';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import featuredSnapshot from '../generated/featured.json';
+import contentSnapshot from '../generated/content.json';
 import SEO from './SEO';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPhone, faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
-import { faComment } from '@fortawesome/free-solid-svg-icons';
-import {
-  faFacebook,
-  faInstagram,
-  faXTwitter,
-} from '@fortawesome/free-brands-svg-icons';
+import Footer from './Footer';
+import { HowItWorks, Pricing, Policies } from './InfoBlocks';
+import './work.css';
+
+const PublishedGallery = lazy(() => import('./PublishedGallery'));
+const IntakeForm = lazy(() => import('./IntakeForm'));
+const SNAPSHOT = Array.isArray(featuredSnapshot?.pieces) ? featuredSnapshot.pieces : [];
+const CONTENT_SNAPSHOT = contentSnapshot && typeof contentSnapshot === 'object' ? contentSnapshot : {};
+const HERO_SLOTS = [0, 1, 2, 3];
+const TILE_WIDTH = 360;
+const TILE_HEIGHT = 480;
+
+function samePieces(left, right) {
+  if (left.length !== right.length) return false;
+  return left.every(
+    (piece, index) =>
+      piece.id === right[index]?.id &&
+      piece.thumb_url === right[index]?.thumb_url &&
+      piece.alt_text === right[index]?.alt_text
+  );
+}
 
 function Home() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const images = [
-    'mihawk.jpeg',
-    'mahoraga.jpeg',
-    'berserk.jpeg',
-    'asta.jpeg',
-    'vines.jpeg',
-    'jack-betterqual.jpeg',
-    'sasuke.jpeg',
-    'tiger.jpeg',
-    'des.jpeg',
-    'gaara-1.jpeg',
-    'ch-drunk.jpeg',
-    'boruto.jpeg',
-    'gogeta.jpeg',
-    'ghost.jpeg',
-    'toji.jpeg',
-    'law.jpeg',
-    'n.jpeg',
-    'ian-6.jpeg',
-    'shenron.jpeg',
-    'tiger-2.jpeg',
-  ];
+  const [pieces, setPieces] = useState(SNAPSHOT);
+  const [heroSettled, setHeroSettled] = useState(false);
+  const [galleryReady, setGalleryReady] = useState(false);
+  const [content, setContent] = useState(CONTENT_SNAPSHOT);
+  const [formReady, setFormReady] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return window.location.hash === '#start' || params.has('ref');
+  });
+  const galleryRef = useRef(null);
+  const startRef = useRef(null);
+  const showFallback = heroSettled && pieces.length === 0;
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (selectedImage === null) {
-        // Only auto-advance if modal is closed
-        setCurrentSlide((prev) => (prev + 1) % images.length);
-      }
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [images.length, selectedImage]);
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % images.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
-  };
-
-  const handleImageClick = (index) => {
-    setSelectedImage(index);
-  };
-
-  const handleClose = () => {
-    setSelectedImage(null);
-  };
-
-  const handlePrevious = (e) => {
-    e.stopPropagation();
-    setSelectedImage((prev) => (prev > 0 ? prev - 1 : images.length - 1));
-  };
-
-  const handleNext = (e) => {
-    e.stopPropagation();
-    setSelectedImage((prev) => (prev < images.length - 1 ? prev + 1 : 0));
-  };
-
-  const handleKeyDown = (e) => {
-    if (selectedImage !== null) {
-      if (e.key === 'ArrowLeft') handlePrevious(e);
-      if (e.key === 'ArrowRight') handleNext(e);
-      if (e.key === 'Escape') handleClose();
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
+    let active = true;
+    import('../lib/refreshHero')
+      .then((mod) => mod.loadHeroPieces())
+      .then((result) => {
+        if (!active) return;
+        setHeroSettled(true);
+        if (result.failed) return;
+        setPieces((current) => (samePieces(current, result.pieces) ? current : result.pieces));
+      })
+      .catch(() => {
+        if (active) setHeroSettled(true);
+      });
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      active = false;
     };
-  }, [selectedImage]);
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    import('../lib/refreshContent')
+      .then((mod) => mod.loadSiteContent())
+      .then((result) => {
+        if (!active || result.failed) return;
+        setContent((current) => ({ ...current, ...result.content }));
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const node = startRef.current;
+    if (!node || formReady) return undefined;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) setFormReady(true);
+      },
+      { rootMargin: '800px' }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [formReady]);
+
+  useEffect(() => {
+    const node = galleryRef.current;
+    if (!node) return undefined;
+    let started = false;
+    const start = () => {
+      if (started) return;
+      started = true;
+      setGalleryReady(true);
+    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) start();
+      },
+      { rootMargin: '600px' }
+    );
+    observer.observe(node);
+    let idleId = 0;
+    let timer = 0;
+    if (typeof window.requestIdleCallback === 'function') {
+      idleId = window.requestIdleCallback(start, { timeout: 2000 });
+    } else {
+      timer = window.setTimeout(start, 200);
+    }
+    return () => {
+      observer.disconnect();
+      if (idleId && typeof window.cancelIdleCallback === 'function') {
+        window.cancelIdleCallback(idleId);
+      }
+      if (timer) window.clearTimeout(timer);
+    };
+  }, []);
 
   return (
     <div>
@@ -95,589 +122,76 @@ function Home() {
         path="/"
       />
       <div id="wrapper">
-        <div id="booking">
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '1.5rem',
-              padding: '0',
-            }}
-          >
-            <p
-              style={{
-                margin: '0',
-                fontSize: '1.2rem',
-                textAlign: 'center',
-                lineHeight: '1.4',
-              }}
-            >
-              <span className="desktop-only">
-                Contact us to Book a Consultation Today
-              </span>
-              <span className="mobile-only">Book a Consultation</span>
+        <section className="public-hero">
+          <h1>Custom anime and pop-culture tattoos in Brandon and Tampa.</h1>
+          <p className="hero-sub">
+            Appointment only. Send your idea, get a quote, lock your date with a deposit.
+          </p>
+          <div className="hero-actions">
+            <a className="hero-primary" href="#start">
+              Start Your Tattoo
+            </a>
+            <a className="hero-secondary" href="#work">
+              See the work
+            </a>
+          </div>
+          {showFallback ? (
+            <p className="work-note">
+              The work is loading, see our{' '}
+              <a href="https://ig.me/m/lyfetattooos">Instagram</a>.
             </p>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1rem',
-                width: '100%',
-              }}
-              className="contact-links-container"
-            >
-              <a
-                href="tel:+16562401034"
-                className="contact-link"
-                onClick={() =>
-                  trackEvent('click_to_call', {
-                    link_location: 'home',
-                  })
-                }
-              >
-                <FontAwesomeIcon icon={faPhone} />
-                <span>Call</span>
-              </a>
-              <a
-                href="sms:+16562401034"
-                className="contact-link"
-                onClick={() =>
-                  trackEvent('click_to_text', {
-                    link_location: 'home',
-                  })
-                }
-              >
-                <FontAwesomeIcon icon={faComment} />
-                <span>Text</span>
-              </a>
-              {/* TODO: confirm this email address before publishing contact details. */}
-              <a href="mailto:darkrai393@gmail.com" className="contact-link">
-                <FontAwesomeIcon icon={faEnvelope} />
-                <span>Email</span>
-              </a>
+          ) : (
+            <div className="hero-pieces">
+              {HERO_SLOTS.map((index) => {
+                const piece = pieces[index];
+                return (
+                  <div className="work-tile" key={index}>
+                    {piece?.thumb_url ? (
+                      <img
+                        src={piece.thumb_url}
+                        alt={piece.alt_text || piece.title || 'Tattoo'}
+                        width={TILE_WIDTH}
+                        height={TILE_HEIGHT}
+                        fetchPriority={index === 0 ? 'high' : undefined}
+                        loading="eager"
+                      />
+                    ) : null}
+                  </div>
+                );
+              })}
             </div>
-          </div>
-        </div>
-
-        <section>
-          <div className="carousel">
-            <button className="carousel-button prev" onClick={prevSlide}>
-              &#8678;
-            </button>
-            <button className="carousel-button next" onClick={nextSlide}>
-              &#8680;
-            </button>
-            <ul>
-              {images.map((image, index) => (
-                <li
-                  key={index}
-                  className="slide"
-                  data-active={index === currentSlide ? true : undefined}
-                  onClick={() => handleImageClick(index)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <img
-                    src={`/resources/images/${image}`}
-                    alt={`Slide ${index + 1}`}
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
+          )}
         </section>
 
-        {/* Modal Gallery */}
-        {selectedImage !== null && (
-          <div
-            onClick={handleClose}
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0.9)',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              zIndex: 1000,
-            }}
-          >
-            {/* Navigation Buttons */}
-            <button
-              onClick={handlePrevious}
-              style={{
-                position: 'absolute',
-                left: 'clamp(0.5rem, 2vw, 2rem)',
-                backgroundColor: 'transparent',
-                border: 'none',
-                color: 'white',
-                fontSize: 'clamp(1.5rem, 3vw, 2rem)',
-                cursor: 'pointer',
-                padding: 'clamp(0.5rem, 2vw, 1rem)',
-                zIndex: 1001,
-              }}
-            >
-              ←
-            </button>
-            <button
-              onClick={handleNext}
-              style={{
-                position: 'absolute',
-                right: 'clamp(0.5rem, 2vw, 2rem)',
-                backgroundColor: 'transparent',
-                border: 'none',
-                color: 'white',
-                fontSize: 'clamp(1.5rem, 3vw, 2rem)',
-                cursor: 'pointer',
-                padding: 'clamp(0.5rem, 2vw, 1rem)',
-                zIndex: 1001,
-              }}
-            >
-              →
-            </button>
-
-            {/* Close Button */}
-            <button
-              onClick={handleClose}
-              style={{
-                position: 'absolute',
-                top: 'clamp(0.5rem, 2vw, 2rem)',
-                right: 'clamp(0.5rem, 2vw, 2rem)',
-                backgroundColor: 'transparent',
-                border: 'none',
-                color: 'white',
-                fontSize: 'clamp(1.5rem, 3vw, 2rem)',
-                cursor: 'pointer',
-                padding: 'clamp(0.5rem, 2vw, 1rem)',
-                zIndex: 1001,
-              }}
-            >
-              ×
-            </button>
-
-            {/* Modal Image */}
-            <div
-              style={{
-                position: 'relative',
-                width: '95%',
-                height: '90%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: 'clamp(1rem, 3vw, 2rem)',
-              }}
-            >
-              <img
-                src={`/resources/images/${images[selectedImage]}`}
-                alt={`Slide ${selectedImage + 1}`}
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '100%',
-                  objectFit: 'contain',
-                  borderRadius: '8px',
-                }}
-              />
-            </div>
-          </div>
-        )}
-
-        <div className="content">
-          <div
-            style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 0' }}
-          >
-            <h1
-              style={{
-                fontSize: '3.5rem',
-                marginBottom: '1.5rem',
-                color: 'var(--primary-text)',
-              }}
-            >
-              Lyfestyle Tattoos
-            </h1>
-            <h2
-              style={{
-                fontSize: '2.2rem',
-                marginBottom: '2rem',
-                color: 'var(--secondary-text)',
-              }}
-            >
-              Anime and custom tattoos in Brandon and Tampa, FL
-            </h2>
-            <div
-              style={{
-                backgroundColor: 'var(--secondary-bg)',
-                padding: '1.5rem',
-                borderRadius: '8px',
-                marginBottom: '3rem',
-              }}
-            >
-              <h3
-                style={{
-                  fontSize: '1.2rem',
-                  lineHeight: '1.4',
-                  marginBottom: '1.5rem',
-                  color: 'var(--secondary-text)',
-                  fontWeight: 'normal',
-                }}
-              >
-                We draw custom anime and pop-culture tattoos in Brandon, FL,
-                and we book people from across Tampa Bay. These are the styles
-                we work in:
-              </h3>
-              <div className="styles-grid">
-                <div
-                  className="style-box"
-                  style={{ textAlign: 'center', padding: '0.5rem' }}
-                >
-                  <h4
-                    style={{
-                      marginBottom: '0.5rem',
-                      color: 'var(--primary-text)',
-                      fontSize: '1rem',
-                    }}
-                  >
-                    Traditional
-                  </h4>
-                  <p
-                    style={{
-                      color: 'var(--secondary-text)',
-                      fontSize: '0.9rem',
-                    }}
-                  >
-                    Classic bold lines and timeless designs
-                  </p>
-                </div>
-                <div
-                  className="style-box"
-                  style={{ textAlign: 'center', padding: '0.5rem' }}
-                >
-                  <h4
-                    style={{
-                      marginBottom: '0.5rem',
-                      color: 'var(--primary-text)',
-                      fontSize: '1rem',
-                    }}
-                  >
-                    Japanese & Anime
-                  </h4>
-                  <p
-                    style={{
-                      color: 'var(--secondary-text)',
-                      fontSize: '0.9rem',
-                    }}
-                  >
-                    Authentic Japanese and anime-inspired artwork
-                  </p>
-                </div>
-                <div
-                  className="style-box"
-                  style={{ textAlign: 'center', padding: '0.5rem' }}
-                >
-                  <h4
-                    style={{
-                      marginBottom: '0.5rem',
-                      color: 'var(--primary-text)',
-                      fontSize: '1rem',
-                    }}
-                  >
-                    Black & Grey
-                  </h4>
-                  <p
-                    style={{
-                      color: 'var(--secondary-text)',
-                      fontSize: '0.9rem',
-                    }}
-                  >
-                    Detailed shading and lifelike designs
-                  </p>
-                </div>
-                <div
-                  className="style-box"
-                  style={{ textAlign: 'center', padding: '0.5rem' }}
-                >
-                  <h4
-                    style={{
-                      marginBottom: '0.5rem',
-                      color: 'var(--primary-text)',
-                      fontSize: '1rem',
-                    }}
-                  >
-                    Color Realism
-                  </h4>
-                  <p
-                    style={{
-                      color: 'var(--secondary-text)',
-                      fontSize: '0.9rem',
-                    }}
-                  >
-                    Vibrant, true-to-life color work
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div
-              className="choose"
-              style={{
-                backgroundColor: 'var(--secondary-bg)',
-                padding: '1.5rem',
-                borderRadius: '8px',
-                marginTop: '2rem',
-              }}
-            >
-              <h2
-                style={{
-                  fontSize: '1.5rem',
-                  marginBottom: '1.5rem',
-                  textAlign: 'center',
-                }}
-              >
-                Why Choose Us?
-              </h2>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '1.5rem',
-                }}
-              >
-                <div className="feature" style={{ textAlign: 'center' }}>
-                  <h4
-                    style={{
-                      marginBottom: '0.5rem',
-                      fontSize: '1.1rem',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    Expert Artist
-                  </h4>
-                  <p
-                    style={{
-                      lineHeight: '1.4',
-                      color: 'var(--secondary-text)',
-                      fontSize: '0.95rem',
-                    }}
-                  >
-                    Years of experience creating unique, custom tattoos in Tampa
-                  </p>
-                </div>
-
-                <div className="feature" style={{ textAlign: 'center' }}>
-                  <h4
-                    style={{
-                      marginBottom: '0.5rem',
-                      fontSize: '1.1rem',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    Custom Designs
-                  </h4>
-                  <p
-                    style={{
-                      lineHeight: '1.4',
-                      color: 'var(--secondary-text)',
-                      fontSize: '0.95rem',
-                    }}
-                  >
-                    Personalized consultation to bring your vision to life
-                  </p>
-                </div>
-
-                <div className="feature" style={{ textAlign: 'center' }}>
-                  <h4
-                    style={{
-                      marginBottom: '0.5rem',
-                      fontSize: '1.1rem',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    Clean & Safe
-                  </h4>
-                  <p
-                    style={{
-                      lineHeight: '1.4',
-                      color: 'var(--secondary-text)',
-                      fontSize: '0.95rem',
-                    }}
-                  >
-                    We keep the studio clean and use sterile equipment
-                  </p>
-                </div>
-
-                <div className="feature" style={{ textAlign: 'center' }}>
-                  <h4
-                    style={{
-                      marginBottom: '0.5rem',
-                      fontSize: '1.1rem',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    Professional Studio
-                  </h4>
-                  <p
-                    style={{
-                      lineHeight: '1.4',
-                      color: 'var(--secondary-text)',
-                      fontSize: '0.95rem',
-                    }}
-                  >
-                    Comfortable, private tattooing experience
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div id="work" className="home-gallery" ref={galleryRef}>
+          {galleryReady ? (
+            <Suspense fallback={null}>
+              <PublishedGallery />
+            </Suspense>
+          ) : null}
         </div>
+
+        <HowItWorks />
+        <Pricing pricing={content.pricing} />
+        <Policies policies={content.policies} />
+
+        <section className="intake" id="start" ref={startRef} aria-labelledby="start-heading">
+          <h2 id="start-heading">Start your tattoo</h2>
+          {formReady ? (
+            <Suspense fallback={<p className="work-note">Loading the request form.</p>}>
+              <IntakeForm />
+            </Suspense>
+          ) : (
+            <p className="work-note">
+              Or message Clyde on <a href="https://ig.me/m/lyfetattooos">Instagram @lyfetattooos</a>.
+            </p>
+          )}
+        </section>
       </div>
-      <footer
-        style={{
-          backgroundColor: 'var(--secondary-bg)',
-          padding: '2rem 0',
-          marginTop: '4rem',
-          borderTop: '1px solid var(--accent-bg)',
-          width: '100%',
-        }}
-      >
-        <div
-          style={{
-            maxWidth: '1000px',
-            margin: '0 auto',
-            textAlign: 'center',
-            padding: '0 20px',
-          }}
-        >
-          <h3
-            style={{ marginBottom: '1.5rem', color: 'var(--secondary-text)' }}
-          >
-            Connect With Us
-          </h3>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              gap: '2rem',
-              marginBottom: '2rem',
-              flexWrap: 'wrap',
-            }}
-          >
-            <a
-              href="https://www.facebook.com/lyfestyletattoos/"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                color: 'var(--primary-text)',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                transition: 'color 0.3s ease',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.color = 'var(--secondary-text)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.color = 'var(--primary-text)';
-              }}
-            >
-              <FontAwesomeIcon icon={faFacebook} size="lg" />
-              <span>Facebook</span>
-            </a>
-            <a
-              href="https://www.instagram.com/lyfetattooos/"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                color: 'var(--primary-text)',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                transition: 'color 0.3s ease',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.color = 'var(--secondary-text)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.color = 'var(--primary-text)';
-              }}
-            >
-              <FontAwesomeIcon icon={faInstagram} size="lg" />
-              <span>Instagram</span>
-            </a>
-            <a
-              href="https://x.com/LyfestyleTattoo"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                color: 'var(--primary-text)',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                transition: 'color 0.3s ease',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.color = 'var(--secondary-text)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.color = 'var(--primary-text)';
-              }}
-            >
-              <FontAwesomeIcon icon={faXTwitter} size="lg" />
-              <span>X (Twitter)</span>
-            </a>
-            <a
-              href="https://linktr.ee/lyfestyletattoos"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                color: 'var(--primary-text)',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                transition: 'color 0.3s ease',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.color = 'var(--secondary-text)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.color = 'var(--primary-text)';
-              }}
-            >
-              <FontAwesomeIcon icon={faLink} size="lg" />
-              <span>Linktree</span>
-            </a>
-          </div>
-          <p
-            style={{
-              color: 'var(--secondary-text)',
-              fontSize: '0.95rem',
-              lineHeight: '1.6',
-              marginBottom: '1rem',
-            }}
-          >
-            Private studio in Brandon, FL, serving Tampa Bay. Appointment only.
-            The address comes with your booking confirmation.
-          </p>
-          <p style={{ color: 'var(--secondary-text)', fontSize: '0.9rem' }}>
-            © {new Date().getFullYear()} Lyfestyle Tattoos. All rights reserved.
-          </p>
-          <p className="site-credit">
-            <a
-              href="https://digitaldynamicsolution.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Site by DDS
-            </a>
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
 
 export default Home;
+
