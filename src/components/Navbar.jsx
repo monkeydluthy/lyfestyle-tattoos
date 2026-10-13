@@ -28,7 +28,9 @@ function Navbar() {
 
   useEffect(() => {
     if (!isMenuOpen) return undefined;
-    menuRef.current?.querySelector('a')?.focus();
+    const frame = window.requestAnimationFrame(() => {
+      menuRef.current?.querySelector('a')?.focus();
+    });
     const onKeyDown = (event) => {
       if (event.key === 'Escape') {
         setIsMenuOpen(false);
@@ -47,6 +49,7 @@ function Navbar() {
     document.addEventListener('keydown', onKeyDown);
     document.addEventListener('mousedown', onMouseDown);
     return () => {
+      window.cancelAnimationFrame(frame);
       document.removeEventListener('keydown', onKeyDown);
       document.removeEventListener('mousedown', onMouseDown);
     };

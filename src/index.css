@@ -379,13 +379,14 @@ header {
   align-items: center;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
   border: 1px solid var(--green-accent);
 }
 
 .mobile-menu-overlay.active {
   opacity: 1;
   visibility: visible;
+  transition-delay: 0s;
 }
 
 .mobile-menu {
@@ -403,7 +404,7 @@ header {
   text-decoration: none;
   font-size: 18px;
   padding: 16px;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
   border-radius: 8px;
   background-color: var(--secondary-bg);
   display: flex;
