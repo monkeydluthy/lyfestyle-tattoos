@@ -3,16 +3,12 @@ import { trackEvent } from '../utils/analytics';
 import featuredSnapshot from '../generated/featured.json';
 import contentSnapshot from '../generated/content.json';
 import SEO from './SEO';
+import Footer from './Footer';
 import { HowItWorks, Pricing, Policies } from './InfoBlocks';
 import './work.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPhone, faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
+import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
-import {
-  faFacebook,
-  faInstagram,
-  faXTwitter,
-} from '@fortawesome/free-brands-svg-icons';
 
 const PublishedGallery = lazy(() => import('./PublishedGallery'));
 const IntakeForm = lazy(() => import('./IntakeForm'));
@@ -261,151 +257,7 @@ function Home() {
           </div>
         </div>
       </div>
-      <footer
-        style={{
-          backgroundColor: 'var(--secondary-bg)',
-          padding: '2rem 0',
-          marginTop: '4rem',
-          borderTop: '1px solid var(--accent-bg)',
-          width: '100%',
-        }}
-      >
-        <div
-          style={{
-            maxWidth: '1000px',
-            margin: '0 auto',
-            textAlign: 'center',
-            padding: '0 20px',
-          }}
-        >
-          <h3
-            style={{ marginBottom: '1.5rem', color: 'var(--secondary-text)' }}
-          >
-            Connect With Us
-          </h3>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              gap: '2rem',
-              marginBottom: '2rem',
-              flexWrap: 'wrap',
-            }}
-          >
-            <a
-              href="https://www.facebook.com/lyfestyletattoos/"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                color: 'var(--primary-text)',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                transition: 'color 0.3s ease',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.color = 'var(--secondary-text)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.color = 'var(--primary-text)';
-              }}
-            >
-              <FontAwesomeIcon icon={faFacebook} size="lg" />
-              <span>Facebook</span>
-            </a>
-            <a
-              href="https://www.instagram.com/lyfetattooos/"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                color: 'var(--primary-text)',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                transition: 'color 0.3s ease',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.color = 'var(--secondary-text)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.color = 'var(--primary-text)';
-              }}
-            >
-              <FontAwesomeIcon icon={faInstagram} size="lg" />
-              <span>Instagram</span>
-            </a>
-            <a
-              href="https://x.com/LyfestyleTattoo"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                color: 'var(--primary-text)',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                transition: 'color 0.3s ease',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.color = 'var(--secondary-text)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.color = 'var(--primary-text)';
-              }}
-            >
-              <FontAwesomeIcon icon={faXTwitter} size="lg" />
-              <span>X (Twitter)</span>
-            </a>
-            <a
-              href="https://linktr.ee/lyfestyletattoos"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                color: 'var(--primary-text)',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                transition: 'color 0.3s ease',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.color = 'var(--secondary-text)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.color = 'var(--primary-text)';
-              }}
-            >
-              <FontAwesomeIcon icon={faLink} size="lg" />
-              <span>Linktree</span>
-            </a>
-          </div>
-          <p
-            style={{
-              color: 'var(--secondary-text)',
-              fontSize: '0.95rem',
-              lineHeight: '1.6',
-              marginBottom: '1rem',
-            }}
-          >
-            Private studio in Brandon, FL, serving Tampa Bay. Appointment only.
-            The address comes with your booking confirmation.
-          </p>
-          <p style={{ color: 'var(--secondary-text)', fontSize: '0.9rem' }}>
-            © {new Date().getFullYear()} Lyfestyle Tattoos. All rights reserved.
-          </p>
-          <p className="site-credit">
-            <a
-              href="https://digitaldynamicsolution.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Site by DDS
-            </a>
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

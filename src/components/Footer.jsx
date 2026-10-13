@@ -1,11 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faFacebook,
   faInstagram,
   faXTwitter,
 } from '@fortawesome/free-brands-svg-icons';
-import { faLink } from '@fortawesome/free-solid-svg-icons';
 
 function Footer() {
   return (
@@ -28,115 +28,59 @@ function Footer() {
       >
         <h3
           style={{
-            marginBottom: 'clamp(1rem, 2.5vw, 1.5rem)',
-            color: 'var(--secondary-text)',
+            marginBottom: '0.25rem',
+            color: 'var(--primary-text)',
             fontSize: 'clamp(1.2rem, 2.5vw, 1.5rem)',
           }}
         >
-          Connect With Us
+          Lyfestyle Tattoos
         </h3>
-        <div
+        <p
+          style={{
+            color: 'var(--secondary-text)',
+            fontSize: 'clamp(0.9rem, 2vw, 1rem)',
+            marginBottom: 'clamp(1rem, 2.5vw, 1.5rem)',
+          }}
+        >
+          Brandon / Tampa, FL
+        </p>
+        <nav
+          aria-label="Footer"
           style={{
             display: 'flex',
             justifyContent: 'center',
-            gap: 'clamp(1rem, 2.5vw, 2rem)',
+            gap: 'clamp(0.5rem, 2vw, 1.5rem)',
             marginBottom: 'clamp(1.5rem, 3vw, 2rem)',
             flexWrap: 'wrap',
+            fontSize: 'clamp(0.9rem, 2vw, 1rem)',
           }}
         >
-          <a
-            href="https://www.facebook.com/lyfestyletattoos/"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: 'var(--primary-text)',
-              textDecoration: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              transition: 'color 0.3s ease',
-              fontSize: 'clamp(0.9rem, 2vw, 1rem)',
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.color = 'var(--secondary-text)';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.color = 'var(--primary-text)';
-            }}
-          >
-            <FontAwesomeIcon icon={faFacebook} size="lg" />
-            <span>Facebook</span>
-          </a>
           <a
             href="https://www.instagram.com/lyfetattooos/"
             target="_blank"
             rel="noopener noreferrer"
-            style={{
-              color: 'var(--primary-text)',
-              textDecoration: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              transition: 'color 0.3s ease',
-              fontSize: 'clamp(0.9rem, 2vw, 1rem)',
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.color = 'var(--secondary-text)';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.color = 'var(--primary-text)';
-            }}
           >
             <FontAwesomeIcon icon={faInstagram} size="lg" />
-            <span>Instagram</span>
+            <span>Instagram @lyfetattooos</span>
           </a>
           <a
             href="https://x.com/LyfestyleTattoo"
             target="_blank"
             rel="noopener noreferrer"
-            style={{
-              color: 'var(--primary-text)',
-              textDecoration: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              transition: 'color 0.3s ease',
-              fontSize: 'clamp(0.9rem, 2vw, 1rem)',
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.color = 'var(--secondary-text)';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.color = 'var(--primary-text)';
-            }}
           >
             <FontAwesomeIcon icon={faXTwitter} size="lg" />
-            <span>X (Twitter)</span>
+            <span>X</span>
           </a>
           <a
-            href="https://linktr.ee/lyfestyletattoos"
+            href="https://www.facebook.com/lyfestyletattoos/"
             target="_blank"
             rel="noopener noreferrer"
-            style={{
-              color: 'var(--primary-text)',
-              textDecoration: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              transition: 'color 0.3s ease',
-              fontSize: 'clamp(0.9rem, 2vw, 1rem)',
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.color = 'var(--secondary-text)';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.color = 'var(--primary-text)';
-            }}
           >
-            <FontAwesomeIcon icon={faLink} size="lg" />
-            <span>Linktree</span>
+            <FontAwesomeIcon icon={faFacebook} size="lg" />
+            <span>Facebook</span>
           </a>
-        </div>
+          <Link to="/#policies">Policies</Link>
+        </nav>
         <p
           style={{
             color: 'var(--secondary-text)',
@@ -145,8 +89,7 @@ function Footer() {
             marginBottom: '1rem',
           }}
         >
-          Private studio in Brandon, FL, serving Tampa Bay. Appointment only.
-          The address comes with your booking confirmation.
+          Appointment only. The address comes with your booking confirmation.
         </p>
         <p
           style={{
