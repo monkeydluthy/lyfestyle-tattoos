@@ -8,8 +8,8 @@ import './intake.css';
 
 const MAX_PHOTOS = 4;
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
-const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
-const PHOTO_EXTENSIONS = /\.(jpe?g|png|webp|heic|heif)$/i;
+const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const PHOTO_EXTENSIONS = /\.(jpe?g|png|webp)$/i;
 const MIN_FILL_MS = 3000;
 const COOLDOWN_MS = 60 * 1000;
 const COOLDOWN_KEY = 'lyfestyle-lead-sent-at';
@@ -72,7 +72,7 @@ function validate(values) {
 
 function photoProblem(file) {
   const typeOk = PHOTO_TYPES.includes(file.type) || (!file.type && PHOTO_EXTENSIONS.test(file.name));
-  if (!typeOk) return `${file.name} isn't a JPG, PNG, WebP or HEIC photo.`;
+  if (!typeOk) return `${file.name} isn't a JPG, PNG or WebP photo.`;
   if (file.size > MAX_PHOTO_BYTES) return `${file.name} is over 10 MB.`;
   return '';
 }
@@ -361,14 +361,14 @@ function IntakeForm() {
         <input
           id="lead-photos"
           type="file"
-          accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
+          accept="image/jpeg,image/png,image/webp"
           multiple
           onChange={addPhotos}
           disabled={photos.length >= MAX_PHOTOS || submitting}
           aria-describedby="lead-photos-hint"
         />
         <p className="intake-hint" id="lead-photos-hint">
-          Up to {MAX_PHOTOS} photos, 10 MB each. JPG, PNG, WebP or HEIC. Location data is
+          Up to {MAX_PHOTOS} photos, 10 MB each. JPG, PNG or WebP. Location data is
           removed before upload.
         </p>
         {photoNote ? (
