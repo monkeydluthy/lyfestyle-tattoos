@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { trackEvent } from '../utils/analytics';
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -81,19 +80,7 @@ function Navbar() {
           </li>
           <li id="hide">|</li>
           <li>
-            <a
-              href="https://ig.me/m/lyfetattooos"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() =>
-                trackEvent('booking_click', {
-                  link_location: 'navbar',
-                  destination: 'instagram_dm',
-                })
-              }
-            >
-              DM to Book
-            </a>
+            <Link to="/#start">Start a request</Link>
           </li>
           <li id="hide">|</li>
           <li>
@@ -144,17 +131,9 @@ function Navbar() {
             >
               Portfolio
             </Link>
-            <a
-              href="https://ig.me/m/lyfetattooos"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => {
-                trackEvent('booking_click', {
-                  link_location: 'mobile_menu',
-                  destination: 'instagram_dm',
-                });
-                closeMenu();
-              }}
+            <Link
+              to="/#start"
+              onClick={closeMenu}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -162,8 +141,8 @@ function Navbar() {
                 minHeight: '3.5rem',
               }}
             >
-              DM to Book
-            </a>
+              Start a request
+            </Link>
             <a
               href="https://www.instagram.com/lyfetattooos/"
               target="_blank"

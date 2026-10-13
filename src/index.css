@@ -326,46 +326,6 @@ header {
   box-shadow: 0 0 20px rgba(127, 255, 127, 0.15);
 }
 
-/* Why Choose Section Styles */
-.choose {
-  margin: 0 1rem;
-  border: 1px solid var(--green-accent) !important;
-  box-shadow: 0 0 20px rgba(127, 255, 127, 0.1);
-}
-
-.feature {
-  text-align: center;
-  padding: 1.5rem;
-  border-radius: 8px;
-  background-color: var(--accent-bg);
-  transition: all 0.3s ease;
-}
-
-.feature:hover {
-  box-shadow: 0 0 10px var(--green-accent);
-}
-
-.feature h4 {
-  position: relative;
-  display: inline-block;
-}
-
-.feature h4:after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 2px;
-  background-color: var(--green-accent);
-  transition: width 0.3s ease;
-}
-
-.feature:hover h4:after {
-  width: 100%;
-}
-
 /* Mobile Menu Styles */
 .hamburger-button {
   display: none;
@@ -535,39 +495,6 @@ header {
   .content > div {
     margin-bottom: clamp(2rem, 5vw, 3rem);
   }
-
-  .styles-grid {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 0.75rem;
-  }
-}
-
-.styles-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-@media (min-width: 769px) {
-  .styles-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-
-  .style-box {
-    padding: 1rem !important;
-    background-color: var(--accent-bg);
-    border-radius: 8px;
-    border: 1px solid var(--green-accent);
-  }
-
-  .style-box h4 {
-    font-size: 1.2rem !important;
-    margin-bottom: 0.75rem !important;
-  }
 }
 
 /* Responsive Text Display */
@@ -586,22 +513,6 @@ header {
 
   .mobile-only {
     display: none;
-  }
-}
-
-/* Styles Section */
-@media (min-width: 768px) {
-  .style-box {
-    padding: 1rem !important;
-  }
-
-  .style-box h4 {
-    font-size: 1.2rem !important;
-    margin-bottom: 0.75rem !important;
-  }
-
-  .style-box + .style-box {
-    margin-top: 0;
   }
 }
 
@@ -672,16 +583,6 @@ header {
   }
 }
 
-.style-box {
-  border: 1px solid var(--green-accent);
-  transition: all 0.3s ease;
-}
-
-.style-box:hover {
-  border-color: var(--green-hover);
-  box-shadow: 0 0 10px var(--green-accent);
-}
-
 footer a {
   color: var(--primary-text) !important;
   text-decoration: none;
@@ -724,20 +625,6 @@ footer {
   margin-top: 4rem;
   width: 100%;
   border-top: 1px solid var(--green-accent) !important;
-}
-
-/* Adjust some spacings and add transitions */
-.style-box:hover,
-.feature:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 15px var(--green-accent);
-}
-
-.styles-grid .style-box {
-  background-color: var(--accent-bg);
-  padding: 1rem !important;
-  border-radius: 8px;
-  transition: all 0.3s ease;
 }
 
 /* Artist Section and Studio Section */

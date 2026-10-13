@@ -35,6 +35,21 @@ function Analytics() {
   return null;
 }
 
+function ScrollToHash() {
+  const { pathname, hash, key } = useLocation();
+
+  useEffect(() => {
+    const id = decodeURIComponent(hash.slice(1));
+    if (id) {
+      document.getElementById(id)?.scrollIntoView();
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, hash, key]);
+
+  return null;
+}
+
 function NotFound() {
   const location = useLocation();
 
@@ -124,6 +139,7 @@ function App() {
   return (
     <Router>
       <Analytics />
+      <ScrollToHash />
       <Routes>
         <Route
           path="/admin/*"
