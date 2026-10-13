@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -86,10 +86,9 @@ function NotFound() {
             Back to the homepage
           </Link>
         </p>
-        {/* TODO: wire this up to the booking request flow. */}
-        <button type="button" className="contact-link">
+        <Link to="/#start" className="contact-link">
           Start a request
-        </button>
+        </Link>
       </div>
     </div>
   );
@@ -113,9 +112,35 @@ function AdminFallback() {
   );
 }
 
-function PublicSite() {
+function MobileCta() {
+  const { pathname } = useLocation();
+  const [hidden, setHidden] = useState(false);
+
+  useEffect(() => {
+    setHidden(false);
+    const target = document.getElementById('start');
+    if (!target) return undefined;
+    const observer = new IntersectionObserver(([entry]) => {
+      setHidden(entry.isIntersecting);
+    });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [pathname]);
+
   return (
-    <div className="App">
+    <div className={`mobile-cta${hidden ? ' is-hidden' : ''}`} aria-hidden={hidden || undefined}>
+      <Link to="/#start" tabIndex={hidden ? -1 : undefined}>
+        Start a request
+      </Link>
+    </div>
+  );
+}
+
+function PublicSite() {
+  const { pathname } = useLocation();
+  const showCta = pathname !== '/thanks';
+  return (
+    <div className={`App${showCta ? ' has-cta' : ''}`}>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -131,6 +156,7 @@ function PublicSite() {
         />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      {showCta ? <MobileCta /> : null}
     </div>
   );
 }

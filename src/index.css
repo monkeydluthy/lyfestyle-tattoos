@@ -86,14 +86,33 @@ header {
   border: 1px solid transparent;
 }
 
-#nav ul li#hide {
-  color: var(--accent-color);
-  font-size: 1.2rem;
-}
-
 #nav ul li a:hover {
   color: var(--green-accent);
   border-color: var(--green-accent);
+}
+
+.desktop-menu-wrap {
+  margin-left: auto;
+}
+
+#nav ul li a.nav-cta {
+  background-color: var(--green-accent);
+  border-color: var(--green-accent);
+  color: var(--primary-bg);
+  font-weight: 700;
+}
+
+#nav ul li a.nav-cta:hover {
+  background-color: var(--green-hover);
+  border-color: var(--green-hover);
+  color: var(--primary-bg);
+}
+
+#nav a:focus-visible,
+.hamburger-button:focus-visible,
+.mobile-menu a:focus-visible {
+  outline: 2px solid var(--green-accent);
+  outline-offset: 2px;
 }
 
 /* Booking Section Styles */
@@ -329,6 +348,8 @@ header {
 /* Mobile Menu Styles */
 .hamburger-button {
   display: none;
+  min-width: 44px;
+  min-height: 44px;
   background: none;
   border: 1px solid transparent;
   color: var(--primary-text);
@@ -398,6 +419,16 @@ header {
   transform: translateY(-2px);
 }
 
+.mobile-menu a.mobile-menu-cta {
+  background-color: var(--green-accent);
+  color: var(--primary-bg);
+  font-weight: 700;
+}
+
+.mobile-menu a.mobile-menu-cta:hover {
+  background-color: var(--green-hover);
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   #nav {
@@ -435,7 +466,8 @@ header {
     margin-left: 4px;
   }
 
-  .desktop-menu {
+  .desktop-menu,
+  .desktop-menu-wrap {
     display: none !important;
   }
 
@@ -681,4 +713,56 @@ footer {
 .portfolio-item:hover {
   box-shadow: 0 0 15px rgba(127, 255, 127, 0.2);
   transform: translateY(-2px);
+}
+
+/* Mobile bottom bar */
+.mobile-cta {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .App.has-cta {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+  }
+
+  .mobile-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 900;
+    display: block;
+    padding: 0.6rem 16px calc(0.6rem + env(safe-area-inset-bottom));
+    background-color: var(--secondary-bg);
+    border-top: 1px solid var(--green-accent);
+    transition: transform 0.2s ease, visibility 0.2s ease;
+  }
+
+  .mobile-cta.is-hidden {
+    transform: translateY(100%);
+    visibility: hidden;
+  }
+
+  .mobile-cta a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    border-radius: 4px;
+    background-color: var(--green-accent);
+    color: var(--primary-bg);
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .mobile-cta a:focus-visible {
+    outline: 2px solid var(--primary-text);
+    outline-offset: 2px;
+  }
 }

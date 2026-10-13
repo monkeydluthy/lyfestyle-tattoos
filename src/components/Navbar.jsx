@@ -1,39 +1,54 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 
+const MENU_ID = 'site-menu';
+
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { key } = useLocation();
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-    // Prevent scrolling when menu is open
-    document.body.style.overflow = !isMenuOpen ? 'hidden' : 'auto';
-  };
+  const closeMenu = () => setIsMenuOpen(false);
 
-  const closeMenu = () => {
+  // Close after any navigation, including a repeat click on the same link.
+  useEffect(() => {
     setIsMenuOpen(false);
-    document.body.style.overflow = 'auto';
-  };
+  }, [key]);
+
+  // Lock page scroll while the menu is open, and always release it.
+  useEffect(() => {
+    document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMenuOpen]);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    if (!isMenuOpen) return undefined;
+    menuRef.current?.querySelector('a')?.focus();
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setIsMenuOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+    const onMouseDown = (event) => {
       if (
-        isMenuOpen &&
         menuRef.current &&
         !menuRef.current.contains(event.target) &&
         !buttonRef.current.contains(event.target)
       ) {
-        closeMenu();
+        setIsMenuOpen(false);
       }
     };
-
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('mousedown', onMouseDown);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('mousedown', onMouseDown);
     };
   }, [isMenuOpen]);
 
@@ -45,7 +60,7 @@ function Navbar() {
           <Link to="/" onClick={closeMenu}>
             <img
               src="/resources/images/test-mini-logo%20Small.jpeg"
-              alt="logo"
+              alt="Lyfestyle Tattoos home"
             />
           </Link>
         </div>
@@ -70,94 +85,50 @@ function Navbar() {
         </div>
 
         {/* Desktop Navigation */}
-        <ul className="desktop-menu">
-          <li>
-            <Link to="/about">About</Link>
-          </li>
-          <li id="hide">|</li>
-          <li>
-            <Link to="/portfolio">Portfolio</Link>
-          </li>
-          <li id="hide">|</li>
-          <li>
-            <Link to="/#start">Start a request</Link>
-          </li>
-          <li id="hide">|</li>
-          <li>
-            <a
-              href="https://www.instagram.com/lyfetattooos/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Instagram
-            </a>
-          </li>
-        </ul>
+        <nav aria-label="Main" className="desktop-menu-wrap">
+          <ul className="desktop-menu">
+            <li>
+              <Link to="/#work">Work</Link>
+            </li>
+            <li>
+              <Link to="/about">About</Link>
+            </li>
+            <li>
+              <Link to="/#start" className="nav-cta">
+                Start a request
+              </Link>
+            </li>
+          </ul>
+        </nav>
 
         {/* Hamburger Menu Button */}
         <button
           ref={buttonRef}
           className="hamburger-button"
-          onClick={toggleMenu}
-          aria-label="Toggle menu"
+          onClick={() => setIsMenuOpen((open) => !open)}
+          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={isMenuOpen}
+          aria-controls={MENU_ID}
         >
           <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} />
         </button>
 
         {/* Mobile Menu Overlay */}
-        <div className={`mobile-menu-overlay ${isMenuOpen ? 'active' : ''}`}>
-          <div className="mobile-menu" ref={menuRef}>
-            <Link
-              to="/about"
-              onClick={closeMenu}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '3.5rem',
-              }}
-            >
+        <div
+          id={MENU_ID}
+          className={`mobile-menu-overlay ${isMenuOpen ? 'active' : ''}`}
+        >
+          <nav aria-label="Mobile" className="mobile-menu" ref={menuRef}>
+            <Link to="/#work" onClick={closeMenu}>
+              Work
+            </Link>
+            <Link to="/about" onClick={closeMenu}>
               About
             </Link>
-            <Link
-              to="/portfolio"
-              onClick={closeMenu}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '3.5rem',
-              }}
-            >
-              Portfolio
-            </Link>
-            <Link
-              to="/#start"
-              onClick={closeMenu}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '3.5rem',
-              }}
-            >
+            <Link to="/#start" className="mobile-menu-cta" onClick={closeMenu}>
               Start a request
             </Link>
-            <a
-              href="https://www.instagram.com/lyfetattooos/"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={closeMenu}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '3.5rem',
-              }}
-            >
-              Instagram
-            </a>
-          </div>
+          </nav>
         </div>
       </div>
     </header>
