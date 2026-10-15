@@ -133,7 +133,7 @@ function About() {
                   marginBottom: '30px',
                 }}
               >
-                With years of experience and a passion for creating unique
+                With 5 years of experience and a passion for creating unique
                 pieces, Clyde specializes in various styles from traditional to
                 contemporary, anime-inspired to realism. Each tattoo is crafted
                 with precision and dedication to bring your vision to life.
