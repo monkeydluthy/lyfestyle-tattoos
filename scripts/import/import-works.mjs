@@ -146,7 +146,6 @@ async function indexImages(root) {
 
 function classify(row, manifest) {
   if (row.recommendation.startsWith('Hold')) return { action: 'skip', reason: 'Hold' };
-  if (row.number === '62') return { action: 'skip', reason: 'duplicate of #36' };
   if (row.correction) return { action: 'skip', reason: 'your correction is set' };
   if (manifest[row.number]) return { action: 'skip', reason: 'already imported' };
   return { action: 'import', reason: '' };
