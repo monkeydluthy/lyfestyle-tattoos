@@ -15,6 +15,26 @@ const FULL_QUALITY = 82;
 const THUMB_QUALITY = 75;
 const FEATURED_ORDER = [106, 108, 113, 114, 73, 68, 84, 87];
 
+const TITLE_OVERRIDES = new Map([
+  ['8', 'Roman numerals and roses'],
+  ['9', 'Joyboy'],
+  ['13', 'Skeleton warriors'],
+  ['16', 'Angels embracing'],
+  ['33', 'Screaming face with lettering'],
+  ['37', 'John 15:18 Fear God'],
+  ['42', 'Lotus with memorial date'],
+  ['45', 'Ink wash figures'],
+  ['53', 'Hummingbirds with name'],
+  ['55', 'Yuta Okkotsu'],
+  ['60', 'Smoke and fire'],
+  ['62', 'Eyes and webbing'],
+  ['63', 'Script lettering'],
+  ['70', 'Sunflower close-up'],
+  ['75', 'Hooded saint'],
+  ['93', 'Cartoon on a globe'],
+  ['94', 'Red-eyed creature'],
+]);
+
 const STYLE_MAP = new Map([
   ['Black & grey', 'black-grey'],
   ['Black & grey with red', 'black-grey'],
@@ -205,6 +225,7 @@ function sizesEqual(actual, sheet) {
 }
 
 function workTitle(row) {
+  if (TITLE_OVERRIDES.has(row.number)) return TITLE_OVERRIDES.get(row.number);
   const character = blank(row.character);
   if (character) return character;
   const slug = blank(row.subjectSlug);
@@ -257,6 +278,28 @@ async function removeUploaded(supabase, uploaded) {
   await supabase.storage.from('portfolio-media').remove(uploaded);
 }
 
+async function signIn(env) {
+  const supabase = createClient(env.VITE_SUPABASE_URL, env.VITE_SUPABASE_ANON_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+  const signedIn = await supabase.auth.signInWithPassword({
+    email: env.IMPORT_EMAIL,
+    password: env.IMPORT_PASSWORD,
+  });
+  if (signedIn.error) return null;
+  return supabase;
+}
+
+async function maxSortOrder(supabase) {
+  const { data, error } = await supabase
+    .from('works')
+    .select('sort_order')
+    .order('sort_order', { ascending: false })
+    .limit(1);
+  if (error) throw new Error(`Could not read sort_order: ${error.message}`);
+  return data?.[0]?.sort_order ?? 0;
+}
+
 async function uploadRow(supabase, row, style, featuredRank) {
   const id = randomUUID();
   const imagePath = `works/${id}.webp`;
@@ -296,7 +339,7 @@ async function uploadRow(supabase, row, style, featuredRank) {
       caption: null,
       is_featured: featuredRank > 0,
       is_published: false,
-      ...(featuredRank > 0 ? { sort_order: featuredRank } : {}),
+      sort_order: featuredRank > 0 ? featuredRank : row.sortOrder,
     })
     .select('id')
     .single();
@@ -314,10 +357,14 @@ function actionLabel(item) {
 }
 
 function printTable(planned) {
-  const header = ['#', 'action', 'style', 'featured rank', 'pixels', 'matched by', 'pixel check'];
+  const header = ['#', 'action', 'title', 'series', 'slug', 'sort order', 'style', 'featured rank', 'pixels', 'matched by', 'pixel check'];
   const lines = planned.map((item) => [
     item.number,
     actionLabel(item),
+    item.action === 'import' ? workTitle(item) || '' : '',
+    item.action === 'import' ? blank(item.series) || '' : '',
+    item.action === 'import' ? blank(item.subjectSlug) || '' : '',
+    item.action === 'import' ? item.featuredRank || item.sortOrder : '',
     item.style || '',
     item.featuredRank || '',
     item.pixels || '',
@@ -421,7 +468,24 @@ async function main() {
     return;
   }
 
+  const repoRoot = path.resolve(scriptDir, '../..');
+  const env = loadEnv(repoRoot);
+  const supabase = await signIn(env);
+  if (!supabase) {
+    console.error('Sign-in failed.');
+    process.exitCode = 1;
+    return;
+  }
+  const startAfter = await maxSortOrder(supabase);
+  planned
+    .filter((item) => item.action === 'import' && !item.featuredRank)
+    .sort((a, b) => Number(a.number) - Number(b.number))
+    .forEach((item, position) => {
+      item.sortOrder = startAfter + position + 1;
+    });
+
   printTable(planned);
+  console.log(`\nCurrent max sort_order: ${startAfter}`);
   const imported = planned.filter((item) => item.action === 'import');
   const skipped = planned.filter((item) => item.action === 'skip');
   const matched = planned.filter((item) => item.matchedBy);
@@ -453,21 +517,6 @@ async function main() {
   }
   if (!options.commit) {
     console.log('\nDry run only. Nothing was written.');
-    return;
-  }
-
-  const repoRoot = path.resolve(scriptDir, '../..');
-  const env = loadEnv(repoRoot);
-  const supabase = createClient(env.VITE_SUPABASE_URL, env.VITE_SUPABASE_ANON_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-  const signedIn = await supabase.auth.signInWithPassword({
-    email: env.IMPORT_EMAIL,
-    password: env.IMPORT_PASSWORD,
-  });
-  if (signedIn.error) {
-    console.error('Sign-in failed.');
-    process.exitCode = 1;
     return;
   }
 
