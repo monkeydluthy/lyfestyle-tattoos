@@ -24,6 +24,7 @@ const TITLE_OVERRIDES = new Map([
   ['37', 'John 15:18 Fear God'],
   ['42', 'Lotus with memorial date'],
   ['45', 'Ink wash figures'],
+  ['49', 'Fine line jellyfish and mermaid hands'],
   ['53', 'Hummingbirds with name'],
   ['55', 'Yuta Okkotsu'],
   ['60', 'Smoke and fire'],
