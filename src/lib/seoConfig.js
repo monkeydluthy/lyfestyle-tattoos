@@ -3,7 +3,7 @@ export const SITE_ORIGIN = 'https://lyfestyletattoos.com';
 export const SITE = {
   name: 'Lyfestyle Tattoos',
   url: SITE_ORIGIN,
-  logo: `${SITE_ORIGIN}/resources/images/test-mini-logo%20Small.jpeg`,
+  logo: `${SITE_ORIGIN}/resources/images/lyfestyle-logo.jpeg`,
   image: `${SITE_ORIGIN}/resources/images/og-image.jpg`,
   // TODO: telephone — not settled (656.240.1034 vs 813-650-3603).
   // Do not add streetAddress or geo; the studio is appointment only.

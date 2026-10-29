@@ -62,7 +62,7 @@ function Navbar() {
         <div id="logo" className="desktop-only">
           <Link to="/" onClick={closeMenu}>
             <img
-              src="/resources/images/test-mini-logo%20Small.jpeg"
+              src="/resources/images/lyfestyle-logo.jpeg"
               alt="Lyfestyle Tattoos home"
             />
           </Link>
