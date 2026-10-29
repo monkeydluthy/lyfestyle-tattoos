@@ -66,6 +66,8 @@ function NotFound() {
         title="Page not found | Lyfestyle Tattoos"
         description="That page isn't on the Lyfestyle Tattoos site."
         path={location.pathname}
+        canonical={false}
+        robots="noindex, nofollow"
       />
       <div
         id="wrapper"

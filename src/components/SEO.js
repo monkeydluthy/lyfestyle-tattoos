@@ -7,7 +7,19 @@ function setAll(selector, apply) {
   document.querySelectorAll(selector).forEach(apply);
 }
 
-function SEO({ title, description, path }) {
+function removeAll(selector) {
+  document.querySelectorAll(selector).forEach((el) => el.remove());
+}
+
+function upsert(selector, create) {
+  const existing = document.querySelector(selector);
+  if (existing) return existing;
+  const el = create();
+  document.head.appendChild(el);
+  return el;
+}
+
+function SEO({ title, description, path, robots, canonical = true }) {
   const url = `https://lyfestyletattoos.com${path}`;
 
   useEffect(() => {
@@ -18,18 +30,27 @@ function SEO({ title, description, path }) {
     setAll('meta[name="description"]', (el) => {
       el.setAttribute('content', description);
     });
-    setAll('link[rel="canonical"]', (el) => {
-      el.setAttribute('href', url);
-    });
+    if (canonical) {
+      const link = upsert('link[rel="canonical"]', () => {
+        const el = document.createElement('link');
+        el.setAttribute('rel', 'canonical');
+        return el;
+      });
+      link.setAttribute('href', url);
+    } else {
+      removeAll('link[rel="canonical"]');
+    }
     setAll('meta[property="og:title"]', (el) => {
       el.setAttribute('content', title);
     });
     setAll('meta[property="og:description"]', (el) => {
       el.setAttribute('content', description);
     });
-    setAll('meta[property="og:url"]', (el) => {
-      el.setAttribute('content', url);
-    });
+    if (canonical) {
+      setAll('meta[property="og:url"]', (el) => {
+        el.setAttribute('content', url);
+      });
+    }
     setAll('meta[property="og:image"]', (el) => {
       el.setAttribute('content', OG_IMAGE);
     });
@@ -48,7 +69,18 @@ function SEO({ title, description, path }) {
     setAll('meta[name="twitter:image"]', (el) => {
       el.setAttribute('content', OG_IMAGE);
     });
-  }, [title, description, url]);
+    if (robots) {
+      const meta = upsert('meta[name="robots"]', () => {
+        const el = document.createElement('meta');
+        el.setAttribute('name', 'robots');
+        return el;
+      });
+      meta.setAttribute('content', robots);
+    }
+    return () => {
+      if (robots) removeAll('meta[name="robots"]');
+    };
+  }, [title, description, url, robots, canonical]);
 
   return null;
 }
