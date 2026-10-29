@@ -1,3 +1,4 @@
+import { execSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { SITE_ORIGIN, TATTOO_PARLOR_JSONLD } from '../src/lib/seoConfig.js';
@@ -14,6 +15,7 @@ export const PAGES = [
       'Custom anime and pop-culture tattoos by Clyde Wint in Brandon, FL, serving Tampa Bay. Appointment only. Send your idea and get a quote.',
     canonical: true,
     jsonLd: true,
+    source: 'src/components/Home.jsx',
   },
   {
     id: 'about',
@@ -24,6 +26,17 @@ export const PAGES = [
       'Private studio in Brandon, FL, serving Tampa Bay. Custom tattoos, including anime and pop culture, by Clyde Wint. Appointment only.',
     canonical: true,
     jsonLd: true,
+    source: 'src/components/About.jsx',
+  },
+  {
+    id: 'portfolio',
+    path: '/portfolio',
+    out: 'portfolio/index.html',
+    title: 'Portfolio | Lyfestyle Tattoos',
+    description:
+      'Recent anime, black and grey, and color realism tattoos by Clyde Wint at Lyfestyle Tattoos in Brandon and Tampa, FL.',
+    canonical: true,
+    source: 'src/components/Portfolio.jsx',
   },
   {
     id: 'not-found',
@@ -88,6 +101,35 @@ export function applyPageHead(html, page) {
   return next;
 }
 
+function lastmodFor(file) {
+  if (!file) return new Date().toISOString().slice(0, 10);
+  try {
+    const date = execSync(`git log -1 --format=%cs -- ${file}`, {
+      encoding: 'utf8',
+    }).trim();
+    if (date) return date;
+  } catch {
+    // Fall through to today when git is unavailable.
+  }
+  return new Date().toISOString().slice(0, 10);
+}
+
+export function sitemapPages() {
+  return PAGES.filter((page) => page.path && page.canonical !== false && !page.robots);
+}
+
+export function writeSitemap(outDir) {
+  const urls = sitemapPages()
+    .map((page) => {
+      const loc = `${SITE_ORIGIN}${page.path}`;
+      const lastmod = lastmodFor(page.source);
+      return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`;
+    })
+    .join('\n');
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
+  writeFileSync(path.join(outDir, 'sitemap.xml'), xml);
+}
+
 export function writeSeoPages(outDir) {
   const index = readFileSync(path.join(outDir, 'index.html'), 'utf8');
   for (const page of PAGES) {
@@ -95,4 +137,5 @@ export function writeSeoPages(outDir) {
     mkdirSync(path.dirname(dest), { recursive: true });
     writeFileSync(dest, applyPageHead(index, page));
   }
+  writeSitemap(outDir);
 }
