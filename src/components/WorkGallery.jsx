@@ -4,6 +4,9 @@ import { sizeLabel, slugify, styleLabel, workImageUrl } from '../lib/works';
 import './work.css';
 
 const PAGE_SIZE = 24;
+const TILE_WIDTH = 360;
+const TILE_HEIGHT = 480;
+const FIRST_ROW = 4;
 const FILTERS = [
   { key: 'series', label: 'Series', field: 'series', slug: true },
   { key: 'style', label: 'Style', field: 'style', slug: false },
@@ -189,7 +192,10 @@ function WorkGallery({ works }) {
                 <img
                   src={workImageUrl(work.thumb_path)}
                   alt={work.alt_text || work.title || 'Tattoo'}
-                  loading="lazy"
+                  width={TILE_WIDTH}
+                  height={TILE_HEIGHT}
+                  loading={index < FIRST_ROW ? 'eager' : 'lazy'}
+                  fetchPriority={index === 0 ? 'high' : undefined}
                 />
               </button>
             ))}
