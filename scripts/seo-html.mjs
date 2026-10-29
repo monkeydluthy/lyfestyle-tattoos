@@ -1,9 +1,30 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { SITE_ORIGIN, TATTOO_PARLOR_JSONLD } from '../src/lib/seoConfig.js';
 
-export const SITE_ORIGIN = 'https://lyfestyletattoos.com';
+export { SITE_ORIGIN };
 
 export const PAGES = [
+  {
+    id: 'home',
+    path: '/',
+    out: 'index.html',
+    title: 'Anime & Custom Tattoos in Brandon & Tampa, FL | Lyfestyle Tattoos',
+    description:
+      'Custom anime and pop-culture tattoos by Clyde Wint in Brandon, FL, serving Tampa Bay. Appointment only. Send your idea and get a quote.',
+    canonical: true,
+    jsonLd: true,
+  },
+  {
+    id: 'about',
+    path: '/about',
+    out: 'about/index.html',
+    title: 'About | Lyfestyle Tattoos',
+    description:
+      'Private studio in Brandon, FL, serving Tampa Bay. Custom tattoos, including anime and pop culture, by Clyde Wint. Appointment only.',
+    canonical: true,
+    jsonLd: true,
+  },
   {
     id: 'not-found',
     out: '404.html',
@@ -53,6 +74,14 @@ export function applyPageHead(html, page) {
     next = next.replace(
       '</head>',
       `    <meta name="robots" content="${escapeHtml(page.robots)}" />\n  </head>`
+    );
+  }
+
+  next = next.replace(/\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
+  if (page.jsonLd) {
+    next = next.replace(
+      '</head>',
+      `    <script type="application/ld+json">${JSON.stringify(TATTOO_PARLOR_JSONLD)}</script>\n  </head>`
     );
   }
 

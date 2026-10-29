@@ -85,4 +85,19 @@ function SEO({ title, description, path, robots, canonical = true }) {
   return null;
 }
 
+export function JsonLd({ data }) {
+  useEffect(() => {
+    const id = 'site-jsonld';
+    document.getElementById(id)?.remove();
+    const script = document.createElement('script');
+    script.id = id;
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(data);
+    document.head.appendChild(script);
+    return () => document.getElementById(id)?.remove();
+  }, [data]);
+
+  return null;
+}
+
 export default SEO;
