@@ -7,11 +7,19 @@
   # Create React App treats warnings as errors when CI=true (Netlify's default)
   CI = "false"
 
-# Bare /index.html should not be a second URL for the homepage
+# Bare /index.html should not be a second URL for the homepage.
+# Force (!) so the published index.html file does not win over this redirect.
 [[redirects]]
   from = "/index.html"
   to = "/"
   status = 301
+  force = true
+
+[[redirects]]
+  from = "/index"
+  to = "/"
+  status = 301
+  force = true
 
 # Old reviews URL. Must stay ahead of the SPA fallback.
 [[redirects]]
