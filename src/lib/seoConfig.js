@@ -17,7 +17,7 @@ export const SITE = {
   url: `${SITE_ORIGIN}/`,
   logo: `${SITE_ORIGIN}/resources/images/lyfestyle-logo.jpeg`,
   image: `${SITE_ORIGIN}/resources/images/og-image.jpg`,
-  // TODO: telephone — not settled (656.240.1034 vs 813-650-3603).
+  telephone: '+1-656-240-1034',
   // Do not add streetAddress or geo; the studio is appointment only.
   sameAs: [
     'https://www.instagram.com/lyfetattooos/',
@@ -50,6 +50,7 @@ export function tattooParlorJsonLd() {
     url: SITE.url,
     logo: SITE.logo,
     image: SITE.image,
+    telephone: SITE.telephone,
     areaServed: [city('Brandon'), city('Tampa')],
     sameAs: SITE.sameAs,
     founder: person,
