@@ -4,7 +4,8 @@ import Navbar from './components/Navbar';
 import Home from './components/Home';
 import About from './components/About';
 import Portfolio from './components/Portfolio';
-import SEO from './components/SEO';
+import SEO, { JsonLd } from './components/SEO';
+import { TATTOO_PARLOR_JSONLD } from './lib/seoConfig';
 import './index.css';
 
 const AdminApp = lazy(() => import('./admin/AdminApp'));
@@ -136,11 +137,19 @@ function MobileCta() {
   );
 }
 
+function publicPath(pathname) {
+  if (pathname.length > 1 && pathname.endsWith('/')) return pathname.slice(0, -1);
+  return pathname;
+}
+
 function PublicSite() {
   const { pathname } = useLocation();
-  const showCta = pathname !== '/thanks';
+  const path = publicPath(pathname);
+  const showCta = path !== '/thanks';
+  const schema = path === '/' || path === '/about' ? TATTOO_PARLOR_JSONLD : null;
   return (
     <div className={`App${showCta ? ' has-cta' : ''}`}>
+      <JsonLd data={schema} />
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />

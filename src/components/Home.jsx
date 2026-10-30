@@ -1,8 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import featuredSnapshot from '../generated/featured.json';
 import contentSnapshot from '../generated/content.json';
-import SEO, { JsonLd } from './SEO';
-import { TATTOO_PARLOR_JSONLD } from '../lib/seoConfig';
+import SEO from './SEO';
 import Footer from './Footer';
 import { HowItWorks, Pricing, Policies } from './InfoBlocks';
 import './work.css';
@@ -123,7 +122,6 @@ function Home() {
         description="Custom anime and pop-culture tattoos by Clyde Wint in Brandon, FL, serving Tampa Bay. Appointment only. Send your idea and get a quote."
         path="/"
       />
-      <JsonLd data={TATTOO_PARLOR_JSONLD} />
       <main id="wrapper">
         <section className="public-hero">
           <h1>Custom anime and pop-culture tattoos in Brandon and Tampa.</h1>

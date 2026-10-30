@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Footer from './Footer';
-import SEO, { JsonLd } from './SEO';
-import { TATTOO_PARLOR_JSONLD } from '../lib/seoConfig';
+import SEO from './SEO';
 
 function About() {
   return (
@@ -18,7 +17,6 @@ function About() {
         description="Private studio in Brandon, FL, serving Tampa Bay. Custom tattoos, including anime and pop culture, by Clyde Wint. Appointment only."
         path="/about"
       />
-      <JsonLd data={TATTOO_PARLOR_JSONLD} />
       <main
         className="content"
         style={{

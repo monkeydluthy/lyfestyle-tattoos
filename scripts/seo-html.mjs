@@ -94,7 +94,7 @@ export function applyPageHead(html, page) {
   if (page.jsonLd) {
     next = next.replace(
       '</head>',
-      `    <script type="application/ld+json">${JSON.stringify(TATTOO_PARLOR_JSONLD)}</script>\n  </head>`
+      `    <script id="site-jsonld" type="application/ld+json">${JSON.stringify(TATTOO_PARLOR_JSONLD)}</script>\n  </head>`
     );
   }
 

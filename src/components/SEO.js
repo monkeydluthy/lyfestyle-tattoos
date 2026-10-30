@@ -85,16 +85,54 @@ function SEO({ title, description, path, robots, canonical = true }) {
   return null;
 }
 
+function jsonLdScripts() {
+  return [...document.querySelectorAll('script[type="application/ld+json"]')];
+}
+
+function sameJsonLd(el, data) {
+  const text = el.textContent || '';
+  const serialized = JSON.stringify(data);
+  if (text === serialized) return true;
+  try {
+    return JSON.stringify(JSON.parse(text)) === serialized;
+  } catch {
+    return false;
+  }
+}
+
 export function JsonLd({ data }) {
   useEffect(() => {
     const id = 'site-jsonld';
-    document.getElementById(id)?.remove();
-    const script = document.createElement('script');
-    script.id = id;
-    script.type = 'application/ld+json';
-    script.text = JSON.stringify(data);
-    document.head.appendChild(script);
-    return () => document.getElementById(id)?.remove();
+    const existing =
+      document.getElementById(id) ||
+      (data ? jsonLdScripts().find((el) => sameJsonLd(el, data)) : null);
+
+    if (!data) {
+      jsonLdScripts().forEach((el) => {
+        if (el.id === id || el.dataset.created === 'true') el.remove();
+      });
+      return undefined;
+    }
+
+    const serialized = JSON.stringify(data);
+    let created = false;
+    let script = existing;
+    if (script) {
+      script.id = id;
+      script.textContent = serialized;
+    } else {
+      script = document.createElement('script');
+      script.id = id;
+      script.type = 'application/ld+json';
+      script.textContent = serialized;
+      script.dataset.created = 'true';
+      document.head.appendChild(script);
+      created = true;
+    }
+
+    return () => {
+      if (created) script.remove();
+    };
   }, [data]);
 
   return null;
