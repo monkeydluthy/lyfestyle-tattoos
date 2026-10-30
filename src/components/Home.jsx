@@ -124,7 +124,7 @@ function Home() {
         path="/"
       />
       <JsonLd data={TATTOO_PARLOR_JSONLD} />
-      <div id="wrapper">
+      <main id="wrapper">
         <section className="public-hero">
           <h1>Custom anime and pop-culture tattoos in Brandon and Tampa.</h1>
           <p className="hero-sub">
@@ -190,7 +190,7 @@ function Home() {
             </p>
           )}
         </section>
-      </div>
+      </main>
       <Footer />
     </div>
   );

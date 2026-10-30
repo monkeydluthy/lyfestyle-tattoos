@@ -19,7 +19,7 @@ function About() {
         path="/about"
       />
       <JsonLd data={TATTOO_PARLOR_JSONLD} />
-      <div
+      <main
         className="content"
         style={{
           backgroundColor: 'var(--primary-bg)',
@@ -280,12 +280,12 @@ function About() {
             >
               Have an idea?
             </h2>
-            <Link className="hero-primary" to="/#start">
+            <Link className="hero-primary" to="/#start" aria-label="Start a request from the about page">
               Start a request
             </Link>
           </div>
         </div>
-      </div>
+      </main>
       <Footer />
     </div>
   );

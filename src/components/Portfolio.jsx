@@ -19,7 +19,7 @@ function Portfolio() {
         description="Recent anime, black and grey, and color realism tattoos by Clyde Wint at Lyfestyle Tattoos in Brandon and Tampa, FL."
         path="/portfolio"
       />
-      <div
+      <main
         className="content"
         style={{
           backgroundColor: 'var(--primary-bg)',
@@ -60,7 +60,7 @@ function Portfolio() {
             <PublishedGallery />
           </Suspense>
         </div>
-      </div>
+      </main>
       <Footer />
     </div>
   );

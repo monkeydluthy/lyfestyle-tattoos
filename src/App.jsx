@@ -48,7 +48,7 @@ function NotFound() {
   const location = useLocation();
 
   return (
-    <div
+    <main
       className="content"
       style={{
         minHeight: '70vh',
@@ -82,11 +82,11 @@ function NotFound() {
             Back to the homepage
           </Link>
         </p>
-        <Link to="/#start" className="contact-link">
+        <Link to="/#start" className="contact-link" aria-label="Start a request from the not found page">
           Start a request
         </Link>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -125,7 +125,11 @@ function MobileCta() {
 
   return (
     <div className={`mobile-cta${hidden ? ' is-hidden' : ''}`} aria-hidden={hidden || undefined}>
-      <Link to="/#start" tabIndex={hidden ? -1 : undefined}>
+      <Link
+        to="/#start"
+        tabIndex={hidden ? -1 : undefined}
+        aria-label="Start a request from the mobile bar"
+      >
         Start a request
       </Link>
     </div>

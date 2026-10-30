@@ -99,7 +99,7 @@ function Navbar() {
               <Link to="/about">About</Link>
             </li>
             <li>
-              <Link to="/#start" className="nav-cta">
+              <Link to="/#start" className="nav-cta" aria-label="Start a request from the main menu">
                 Start a request
               </Link>
             </li>
@@ -130,7 +130,12 @@ function Navbar() {
             <Link to="/about" onClick={closeMenu}>
               About
             </Link>
-            <Link to="/#start" className="mobile-menu-cta" onClick={closeMenu}>
+            <Link
+              to="/#start"
+              className="mobile-menu-cta"
+              onClick={closeMenu}
+              aria-label="Start a request from the mobile menu"
+            >
               Start a request
             </Link>
           </nav>

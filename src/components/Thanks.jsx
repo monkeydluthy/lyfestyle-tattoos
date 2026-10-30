@@ -17,7 +17,7 @@ function Thanks() {
   }, []);
 
   return (
-    <div className="content" style={{ minHeight: '70vh', display: 'flex', alignItems: 'center' }}>
+    <main className="content" style={{ minHeight: '70vh', display: 'flex', alignItems: 'center' }}>
       <SEO
         title="Thanks | Lyfestyle Tattoos"
         description="Your tattoo request was sent to Lyfestyle Tattoos."
@@ -34,7 +34,7 @@ function Thanks() {
           </a>
         </p>
       </div>
-    </div>
+    </main>
   );
 }
 
