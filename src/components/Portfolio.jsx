@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import Footer from './Footer';
 import SEO from './SEO';
+import { trackEvent } from '../utils/analytics';
 
 const PublishedGallery = lazy(() => import('./PublishedGallery'));
 
@@ -53,7 +54,18 @@ function Portfolio() {
             fallback={
               <p className="work-note" style={{ textAlign: 'center' }}>
                 The work is loading, see our{' '}
-                <a href="https://ig.me/m/lyfetattooos">Instagram</a>.
+                <a
+                  href="https://ig.me/m/lyfetattooos"
+                  onClick={() =>
+                    trackEvent('booking_click', {
+                      destination: 'instagram_dm',
+                      location: 'portfolio',
+                    })
+                  }
+                >
+                  Instagram
+                </a>
+                .
               </p>
             }
           >

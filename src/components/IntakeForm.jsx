@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { fetchPublishedWorks } from '../lib/works';
 import { processPhoto } from '../admin/processPhoto';
 import { STYLE_OPTIONS, SIZE_OPTIONS } from '../admin/options';
+import { trackEvent } from '../utils/analytics';
 import './intake.css';
 
 const MAX_PHOTOS = 4;
@@ -265,6 +266,11 @@ function IntakeForm() {
       const { error } = await supabase.from('leads').insert(row);
       if (error) throw error;
 
+      trackEvent('generate_lead', {
+        form_name: 'intake',
+        size: values.size,
+        style: values.style,
+      });
       writeCooldown();
       navigate('/thanks', { state: { firstName: firstNameOf(values.name) } });
     } catch {
@@ -414,7 +420,15 @@ function IntakeForm() {
             <>
               Something went wrong sending your request. Your answers are still here, so you can
               try again. Or message Clyde on{' '}
-              <a href="https://ig.me/m/lyfetattooos">Instagram @lyfetattooos</a>.
+              <a
+                href="https://ig.me/m/lyfetattooos"
+                onClick={() =>
+                  trackEvent('booking_click', { destination: 'instagram_dm', location: 'form' })
+                }
+              >
+                Instagram @lyfetattooos
+              </a>
+              .
             </>
           ) : (
             formError
@@ -426,7 +440,16 @@ function IntakeForm() {
         {submitting ? 'Sending…' : 'Send my request'}
       </button>
       <p className="intake-hint">
-        Prefer Instagram? <a href="https://ig.me/m/lyfetattooos">Message @lyfetattooos</a>.
+        Prefer Instagram?{' '}
+        <a
+          href="https://ig.me/m/lyfetattooos"
+          onClick={() =>
+            trackEvent('booking_click', { destination: 'instagram_dm', location: 'form' })
+          }
+        >
+          Message @lyfetattooos
+        </a>
+        .
       </p>
     </form>
   );

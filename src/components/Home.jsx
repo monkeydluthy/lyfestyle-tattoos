@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { trackEvent } from '../utils/analytics';
 import featuredSnapshot from '../generated/featured.json';
 import contentSnapshot from '../generated/content.json';
 import SEO from './SEO';
@@ -139,7 +140,15 @@ function Home() {
           {showFallback ? (
             <p className="work-note">
               The work is loading, see our{' '}
-              <a href="https://ig.me/m/lyfetattooos">Instagram</a>.
+              <a
+                href="https://ig.me/m/lyfetattooos"
+                onClick={() =>
+                  trackEvent('booking_click', { destination: 'instagram_dm', location: 'home' })
+                }
+              >
+                Instagram
+              </a>
+              .
             </p>
           ) : (
             <div className="hero-pieces">
@@ -184,7 +193,16 @@ function Home() {
             </Suspense>
           ) : (
             <p className="work-note">
-              Or message Clyde on <a href="https://ig.me/m/lyfetattooos">Instagram @lyfetattooos</a>.
+              Or message Clyde on{' '}
+              <a
+                href="https://ig.me/m/lyfetattooos"
+                onClick={() =>
+                  trackEvent('booking_click', { destination: 'instagram_dm', location: 'form' })
+                }
+              >
+                Instagram @lyfetattooos
+              </a>
+              .
             </p>
           )}
         </section>
