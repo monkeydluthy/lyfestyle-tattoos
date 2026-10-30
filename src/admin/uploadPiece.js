@@ -16,6 +16,7 @@ export async function uploadPiece(supabase, piece) {
 
   const full = await supabase.storage.from('portfolio-media').upload(imagePath, piece.fullBlob, {
     contentType: 'image/webp',
+    cacheControl: '31536000',
     upsert: false,
   });
   if (full.error) {
@@ -27,6 +28,7 @@ export async function uploadPiece(supabase, piece) {
     .from('portfolio-media')
     .upload(thumbPath, piece.thumbBlob, {
       contentType: 'image/webp',
+      cacheControl: '31536000',
       upsert: false,
     });
   if (thumb.error) {
