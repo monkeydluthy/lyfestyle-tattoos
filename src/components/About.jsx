@@ -79,6 +79,8 @@ function About() {
               <img
                 src="/resources/images/clyde-tattooing.jpeg"
                 alt="Clyde Wint Tattooing"
+                width={377}
+                height={480}
                 style={{
                   width: '100%',
                   height: 'clamp(300px, 50vh, 600px)',

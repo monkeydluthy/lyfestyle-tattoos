@@ -61,7 +61,12 @@ function WorkLightbox({ work, onClose, onStep }) {
         →
       </button>
       <div className="lightbox-photo">
-        <img src={workImageUrl(work.image_path)} alt={work.alt_text || work.title || ''} />
+        <img
+          src={workImageUrl(work.image_path)}
+          alt={work.alt_text || work.title || ''}
+          width={360}
+          height={480}
+        />
       </div>
       <div className="lightbox-copy">
         <h2>{work.title || 'Untitled'}</h2>

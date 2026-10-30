@@ -64,6 +64,8 @@ function Navbar() {
             <img
               src="/resources/images/lyfestyle-logo.jpeg"
               alt="Lyfestyle Tattoos home"
+              width={320}
+              height={42}
             />
           </Link>
         </div>
