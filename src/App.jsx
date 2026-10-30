@@ -1,11 +1,5 @@
 import React, { lazy, Suspense, useEffect, useState } from 'react';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  useLocation,
-} from 'react-router-dom';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import About from './components/About';
@@ -165,7 +159,7 @@ function PublicSite() {
 
 function App() {
   return (
-    <Router>
+    <>
       <Analytics />
       <ScrollToHash />
       <Routes>
@@ -179,7 +173,7 @@ function App() {
         />
         <Route path="*" element={<PublicSite />} />
       </Routes>
-    </Router>
+    </>
   );
 }
 

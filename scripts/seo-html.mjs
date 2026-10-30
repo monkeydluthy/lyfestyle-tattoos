@@ -130,12 +130,20 @@ export function writeSitemap(outDir) {
   writeFileSync(path.join(outDir, 'sitemap.xml'), xml);
 }
 
-export function writeSeoPages(outDir) {
+export function writeSeoPages(outDir, renderPage) {
   const index = readFileSync(path.join(outDir, 'index.html'), 'utf8');
   for (const page of PAGES) {
+    let html = applyPageHead(index, page);
+    if (typeof renderPage === 'function' && page.path) {
+      const markup = renderPage(page.path);
+      html = html.replace(
+        '<div id="root"></div>',
+        `<div id="root">${markup}</div>`
+      );
+    }
     const dest = path.join(outDir, page.out);
     mkdirSync(path.dirname(dest), { recursive: true });
-    writeFileSync(dest, applyPageHead(index, page));
+    writeFileSync(dest, html);
   }
   writeSitemap(outDir);
 }

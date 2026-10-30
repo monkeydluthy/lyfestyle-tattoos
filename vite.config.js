@@ -2,8 +2,6 @@ import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
-import { writeSeoPages } from './scripts/seo-html.mjs';
-
 const snapshotPath = path.resolve('src/generated/featured.json');
 
 const contentPath = path.resolve('src/generated/content.json');
@@ -72,20 +70,10 @@ function featuredHints() {
   };
 }
 
-function seoHtml() {
-  return {
-    name: 'seo-html',
-    apply: 'build',
-    closeBundle() {
-      writeSeoPages(path.resolve('build'));
-    },
-  };
-}
-
 ensureSnapshot();
 
 export default defineConfig({
-  plugins: [react(), featuredHints(), seoHtml()],
+  plugins: [react(), featuredHints()],
   build: {
     outDir: 'build',
     modulePreload: false,

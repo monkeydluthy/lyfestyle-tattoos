@@ -15,7 +15,7 @@
   "scripts": {
     "dev": "vite",
     "prebuild": "node scripts/build-featured.mjs",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender.mjs",
     "preview": "vite preview"
   },
   "browserslist": {

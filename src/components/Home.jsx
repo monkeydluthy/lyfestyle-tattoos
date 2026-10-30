@@ -31,6 +31,7 @@ function Home() {
   const [galleryReady, setGalleryReady] = useState(false);
   const [content, setContent] = useState(CONTENT_SNAPSHOT);
   const [formReady, setFormReady] = useState(() => {
+    if (typeof window === 'undefined') return false;
     const params = new URLSearchParams(window.location.search);
     return window.location.hash === '#start' || params.has('ref');
   });
