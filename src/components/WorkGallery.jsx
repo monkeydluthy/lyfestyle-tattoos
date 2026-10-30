@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { sizeLabel, slugify, styleLabel, workImageUrl } from '../lib/works';
 import './work.css';
+
+const WorkLightbox = lazy(() => import('./WorkLightbox'));
 
 const PAGE_SIZE = 24;
 const TILE_WIDTH = 360;
@@ -37,17 +39,11 @@ function matchedValue(works, group, param) {
   return found || '';
 }
 
-function credit(work) {
-  return [work.series, work.character_name].filter(Boolean).join(' · ');
-}
-
 function WorkGallery({ works }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [openIndex, setOpenIndex] = useState(null);
-  const dialogRef = useRef(null);
   const triggerRef = useRef(null);
-  const touchX = useRef(null);
 
   const groups = useMemo(
     () =>
@@ -84,30 +80,7 @@ function WorkGallery({ works }) {
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
     setOpenIndex(null);
-    if (dialogRef.current?.open) dialogRef.current.close();
   }, [query]);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog || openIndex == null) return undefined;
-    if (!dialog.open) dialog.showModal();
-    const onKey = (event) => {
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        step(-1);
-      }
-      if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        step(1);
-      }
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        closeDialog();
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [openIndex, filtered.length]);
 
   function setFilter(key, value) {
     const next = new URLSearchParams(searchParams);
@@ -128,8 +101,6 @@ function WorkGallery({ works }) {
   }
 
   function closeDialog() {
-    const dialog = dialogRef.current;
-    if (dialog?.open) dialog.close();
     setOpenIndex(null);
     triggerRef.current?.focus();
   }
@@ -212,49 +183,11 @@ function WorkGallery({ works }) {
         </>
       )}
 
-      <dialog
-        ref={dialogRef}
-        className="lightbox"
-        aria-label={openWork?.title || 'Tattoo'}
-        onClose={() => {
-          setOpenIndex(null);
-          triggerRef.current?.focus();
-        }}
-        onTouchStart={(event) => {
-          touchX.current = event.changedTouches[0].clientX;
-        }}
-        onTouchEnd={(event) => {
-          if (touchX.current == null) return;
-          const delta = event.changedTouches[0].clientX - touchX.current;
-          if (delta > 40) step(-1);
-          if (delta < -40) step(1);
-          touchX.current = null;
-        }}
-      >
-        {openWork ? (
-          <>
-            <button type="button" className="lightbox-close" onClick={closeDialog} aria-label="Close">
-              ×
-            </button>
-            <button type="button" className="lightbox-nav lightbox-prev" onClick={() => step(-1)} aria-label="Previous">
-              ←
-            </button>
-            <button type="button" className="lightbox-nav lightbox-next" onClick={() => step(1)} aria-label="Next">
-              →
-            </button>
-            <div className="lightbox-photo">
-              <img src={workImageUrl(openWork.image_path)} alt={openWork.alt_text || openWork.title || ''} />
-            </div>
-            <div className="lightbox-copy">
-              <h2>{openWork.title || 'Untitled'}</h2>
-              {credit(openWork) ? <p>{credit(openWork)}</p> : null}
-              <Link className="lightbox-like" to={`/?ref=${openWork.id}#start`} onClick={closeDialog}>
-                I want something like this
-              </Link>
-            </div>
-          </>
-        ) : null}
-      </dialog>
+      {openWork ? (
+        <Suspense fallback={null}>
+          <WorkLightbox work={openWork} onClose={closeDialog} onStep={step} />
+        </Suspense>
+      ) : null}
     </section>
   );
 }
