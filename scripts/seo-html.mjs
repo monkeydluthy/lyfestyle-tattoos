@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { SITE_ORIGIN, TATTOO_PARLOR_JSONLD } from '../src/lib/seoConfig.js';
+import { SITE_ORIGIN, TATTOO_PARLOR_JSONLD, canonicalUrl } from '../src/lib/seoConfig.js';
 
 export { SITE_ORIGIN };
 
@@ -74,11 +74,19 @@ export function applyPageHead(html, page) {
   if (page.canonical === false) {
     next = next.replace(/\s*<link\s+rel="canonical"[^>]*>/g, '');
   } else if (page.path != null) {
-    const url = `${SITE_ORIGIN}${page.path}`;
+    const url = canonicalUrl(page.path);
     if (/<link\s+rel="canonical"/.test(next)) {
       next = next.replace(/<link\s+rel="canonical"[^>]*>/, `<link rel="canonical" href="${url}" />`);
     } else {
       next = next.replace('</head>', `    <link rel="canonical" href="${url}" />\n  </head>`);
+    }
+    if (/<meta\s+property="og:url"/.test(next)) {
+      next = next.replace(
+        /<meta\s+property="og:url"[^>]*>/,
+        `<meta property="og:url" content="${url}" />`
+      );
+    } else {
+      next = next.replace('</head>', `    <meta property="og:url" content="${url}" />\n  </head>`);
     }
   }
 
@@ -121,7 +129,7 @@ export function sitemapPages() {
 export function writeSitemap(outDir) {
   const urls = sitemapPages()
     .map((page) => {
-      const loc = `${SITE_ORIGIN}${page.path}`;
+      const loc = canonicalUrl(page.path);
       const lastmod = lastmodFor(page.source);
       return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`;
     })

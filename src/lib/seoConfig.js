@@ -1,8 +1,20 @@
 export const SITE_ORIGIN = 'https://lyfestyletattoos.com';
 
+export function canonicalPath(path = '/') {
+  const raw = path.startsWith('/') ? path : `/${path}`;
+  if (raw === '/') return '/';
+  const base = raw.length > 1 && raw.endsWith('/') ? raw.slice(0, -1) : raw;
+  if (base === '/about' || base === '/portfolio') return `${base}/`;
+  return base;
+}
+
+export function canonicalUrl(path) {
+  return `${SITE_ORIGIN}${canonicalPath(path)}`;
+}
+
 export const SITE = {
   name: 'Lyfestyle Tattoos',
-  url: SITE_ORIGIN,
+  url: `${SITE_ORIGIN}/`,
   logo: `${SITE_ORIGIN}/resources/images/lyfestyle-logo.jpeg`,
   image: `${SITE_ORIGIN}/resources/images/og-image.jpg`,
   // TODO: telephone — not settled (656.240.1034 vs 813-650-3603).

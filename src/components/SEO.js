@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { canonicalUrl } from '../lib/seoConfig';
 
 const OG_IMAGE = 'https://lyfestyletattoos.com/resources/images/og-image.jpg';
 const OG_IMAGE_ALT = 'Lyfestyle Tattoos logo';
@@ -20,7 +21,7 @@ function upsert(selector, create) {
 }
 
 function SEO({ title, description, path, robots, canonical = true }) {
-  const url = `https://lyfestyletattoos.com${path}`;
+  const url = canonicalUrl(path);
 
   useEffect(() => {
     document.title = title;

@@ -96,7 +96,7 @@ function Navbar() {
               <Link to="/#work">Work</Link>
             </li>
             <li>
-              <Link to="/about">About</Link>
+              <Link to="/about/">About</Link>
             </li>
             <li>
               <Link to="/#start" className="nav-cta" aria-label="Start a request from the main menu">
@@ -127,7 +127,7 @@ function Navbar() {
             <Link to="/#work" onClick={closeMenu}>
               Work
             </Link>
-            <Link to="/about" onClick={closeMenu}>
+            <Link to="/about/" onClick={closeMenu}>
               About
             </Link>
             <Link

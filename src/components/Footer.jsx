@@ -79,7 +79,7 @@ function Footer() {
             <FontAwesomeIcon icon={faFacebook} size="lg" />
             <span>Facebook</span>
           </a>
-          <Link to="/portfolio">Portfolio</Link>
+          <Link to="/portfolio/">Portfolio</Link>
           <Link to="/#policies">Policies</Link>
         </nav>
         <p
