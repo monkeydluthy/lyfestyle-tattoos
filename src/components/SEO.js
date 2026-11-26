@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import { canonicalUrl } from '../lib/seoConfig';
+import overrides from '../../seo/titles.json';
+import { titleOverride } from '../lib/titleOverrides';
 
 const OG_IMAGE = 'https://lyfestyletattoos.com/resources/images/og-image.jpg';
 const OG_IMAGE_ALT = 'Lyfestyle Tattoos logo';
@@ -20,7 +22,12 @@ function upsert(selector, create) {
   return el;
 }
 
-function SEO({ title, description, path, robots, canonical = true }) {
+function SEO({ title: ownTitle, description: ownDescription, path, robots, canonical = true }) {
+  // The SEO pod's override (seo/titles.json) wins on indexable pages, matching the static
+  // HTML the build wrote from the same file.
+  const override = !robots && canonical && path ? titleOverride(path, overrides) : null;
+  const title = override?.title ?? ownTitle;
+  const description = override?.description ?? ownDescription;
   const url = canonicalUrl(path);
 
   useEffect(() => {
