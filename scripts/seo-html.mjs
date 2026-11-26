@@ -2,6 +2,7 @@ import { execSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { SITE_ORIGIN, TATTOO_PARLOR_JSONLD, canonicalUrl } from '../src/lib/seoConfig.js';
+import { withOverrides } from '../src/lib/titleOverrides.js';
 
 export { SITE_ORIGIN };
 
@@ -138,9 +139,19 @@ export function writeSitemap(outDir) {
   writeFileSync(path.join(outDir, 'sitemap.xml'), xml);
 }
 
+function readOverrides() {
+  try {
+    const table = JSON.parse(readFileSync(path.resolve('seo/titles.json'), 'utf8'));
+    return table && typeof table === 'object' && !Array.isArray(table) ? table : {};
+  } catch {
+    return {};
+  }
+}
+
 export function writeSeoPages(outDir, renderPage) {
   const index = readFileSync(path.join(outDir, 'index.html'), 'utf8');
-  for (const page of PAGES) {
+  // seo/titles.json is the SEO pod's inbox: {"/path": {title, description}}; {} = no change.
+  for (const page of withOverrides(PAGES, readOverrides())) {
     let html = applyPageHead(index, page);
     if (typeof renderPage === 'function' && page.path) {
       const markup = renderPage(page.path);
